@@ -1,0 +1,20 @@
+app:
+  port: 3131
+
+db:
+  database: auth
+  host: localhost
+  user: postgres
+  password: root
+  port: 5432
+
+graphile:
+  schemas:
+    - public
+
+auth:
+  secret: gXmzQLiV62GClolGESrNpYerOBqvFBYXXonnKAB5zgw=
+
+admin:
+  id: 48
+  email: admin@soccer.com

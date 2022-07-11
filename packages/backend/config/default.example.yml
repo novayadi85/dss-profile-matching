@@ -1,0 +1,22 @@
+app:
+  port: 3131
+
+db:
+  database: db_pmsinta
+  host: localhost
+  user: postgres
+  password: root
+  port: 5432
+
+graphile:
+  schemas:
+    - public
+    - sch_public
+    - sch_private
+
+auth:
+  secret: gXmzQLiV62GClolGESrNpYerOBqvFBYXXonnKAB5zgw=
+
+admin:
+  id: 100
+  email: admin@pmsinta.com

@@ -1,0 +1,13 @@
+{
+    "extends": [
+        "react-app",
+        "react-app-rewired"
+    ],
+    "rules": {
+        "react/require-extension": "off",
+        "jsx-a11y/anchor-is-valid": [ "error", {
+            "components": [ "Link" ],
+            "specialLink": [ "to" ]
+        }]
+    }
+}
