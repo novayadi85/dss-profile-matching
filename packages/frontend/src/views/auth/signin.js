@@ -5,9 +5,9 @@ import { useNavigate } from 'react-router-dom';
 
 import { AUTH_MUTATION } from '@gql/users'
 import { setLogin } from '@store/auth/action'
-
+import { site } from '@config';
 import GlobalLayout from '@components/layout/globalLayout';
-import Logo from '@assets/images/logo.svg'
+import logo from '@assets/images/logo.png';
 import Illustration from '@assets/images/illustration.svg'
 
 const Signin = () => {
@@ -44,8 +44,8 @@ const Signin = () => {
             {/* <!-- BEGIN: Login Info --> */}
             <div className="hidden xl:flex flex-col min-h-screen">
                 <a href="#" className="-intro-x flex items-center pt-5">
-                    <img alt="Rubick Tailwind HTML Admin Template" className="w-6" src={Logo} />
-                    <span className="text-white text-lg ml-3"> DSS<span className="font-medium">SOCCER</span> </span>
+                    <img alt="Rubick Tailwind HTML Admin Template" className="w-6" src={logo} />
+                    <span className="text-white text-lg ml-3"> { site.name } </span>
                 </a>
                 <div className="my-auto">
                     <img alt="Rubick Tailwind HTML Admin Template" className="-intro-x w-1/2 -mt-16" src={Illustration} />

@@ -3,39 +3,36 @@ import { useState, useEffect, Fragment } from "react";
 import { useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery } from "@apollo/client";
 import InlineEditor from "@ckeditor/ckeditor5-build-inline";
-import { Plus, Trash } from 'react-feather'
 import Select from 'react-select'
 import TextInput from "@components/input/TextInput";
 import DatePicker from "@components/input/DatePicker";
 import TextArea from "@components/input/TextArea";
-import { FileUploader } from "react-drag-drop-files";
-import { ADD_PlAYER, UPDATE_PLAYER, GET_PLAYER } from "@gql/player";
+import { percentage } from '@helpers/value';
+import { getWeek } from '@helpers/date';
+import { GET_PLAYER_WITH_SCORE_BY_WEEK, UPDATE_PlAYER_SCORE , ADD_PlAYER_SCORE } from "@gql/player";
+import { GET_CRITERIA_WITH_CHILDS } from "@gql/criteria";
 
 const ManageScore = (props) => {
 	const navigate = useNavigate()
   	const { id } = useParams()
+	const [progress, setProgress] = useState(true)
 	const [recordId, setRecordId] = useState(false)
 	const [nodeId, setNodeId] = useState(false)
-	const isUpdating = id ? id != "create" : false
+	const [profile, setProfile] = useState(null)
+	const [allCategories, setAllCategories] = useState(null)
+	
+	// const isUpdating = id ? id != "create" : false
+	let isUpdating = false;
 	const [formData, setFormData] = useState({
-		birth: '',
-		clubFrom:'',
-		joinDate: '',
-		name:'',
-		position:''
+		player_id: id,
+		week: getWeek() 
+	})
+
+	const [subCriteriaValues, setValues] = useState({
+
 	})
 	
-	const positionOptions = [
-		{ value: 'GK', label: 'Goal Keeper' },
-		{ value: 'CB', label: 'Center Back' },
-		{ value: 'LF', label: 'Left Back' },
-		{ value: 'RB', label: 'Right Back' },
-		{ value: 'RWF', label: 'Right Wing Forward' },
-		{ value: 'LWF', label: 'Left Wing Forward' },
-		{ value: 'CMF', label: 'Center Middle Forward' },
-		{ value: 'DM', label: 'Defensive Midfielder' },
-		{ value: 'CF', label: 'Center Forward' },
-	]
+	const percentages = percentage;
 
 	useEffect(() => {
 		cash(".editor").each(function () {
@@ -46,79 +43,104 @@ const ManageScore = (props) => {
 		});
 	}, [])
 
-	const { loading, error, data } = useQuery(GET_PLAYER, {
-		skip: !isUpdating,
+
+	const { loading, error, data, refetch } = useQuery(GET_PLAYER_WITH_SCORE_BY_WEEK, {
+		// skip: !isUpdating,
+		fetchPolicy: "no-cache",
 		variables: {
-		  nodeId: id,
+			nodeId: id,
+			condition: {
+				week: getWeek() 
+			}
 		},
 		onCompleted: (data) => {
-		  const player = data.player;
-		  const formDatas = {
-			name: player.name,
-			type: player.type, 
-			birth: player.birth,
-			clubFrom: player.clubFrom,
-			joinDate: player.joinDate,
-			position:player.position,
-		  }
-
-		  setRecordId(player.id);
-		  setNodeId(player._nodeId);
-		  setFormData(formDatas)
+			const profile = data.player;
+			let scores = profile?.score?.nodes ?? [];
+			if (scores.length) {
+				const [score] = scores;
+				setRecordId(score._nodeId);
+				setValues(score.value)
+				isUpdating = true;
+				console.log(score.value)
+			}
+			
+		  	setProfile(profile)
 		}
 	})
 
-	const [addPlayer, { loading: addLoading }] = useMutation(ADD_PlAYER, {
+	const criteria = useQuery(GET_CRITERIA_WITH_CHILDS, {
+		fetchPolicy: "no-cache",
+		variables: {
+			nodeId: id,
+			contains: profile?.position
+		},
 		onCompleted: (data) => {
-		  navigate("/players", { replace: true });
+		  const _allCategories = data?.allCategories?.nodes ?? [];
+			setAllCategories(_allCategories)
+			setProgress(false);
 		}
-	  });
-	
-	const [updatePlayer, { loading: updateLoading }] = useMutation(UPDATE_PLAYER, {
-		onCompleted: (data) => {
-		  navigate("/players", { replace: true });
-		}
-	});
+	})
 
 
 	const handleChange = (key, event) => {
 		setFormData((prev) => ({ ...prev, [key]: event.target.value }))
 	};
 
-	const handleSelectChange = (key, event, isMulti = false) => {
-		if (isMulti) {
-			let array = []
-			event.forEach(e => {
-				array.push(e.value)
-			})
-			setFormData((prev) => ({ ...prev, [key]: array }))
-		} else {
+	function handleSelectChange(evt) {
+		const value = evt.target.value;
+		setFormData({
+		  ...state,
+		  [evt.target.name]: value
+		});
+
+		console.log(formData)
+	}
+
+	const handleSelectChanges = (key, event, sub = true) => {
+		if (sub) {
+			setValues(((prev) => ({ ...prev, [key]: event.value })))
+		}
+		else {
 			setFormData((prev) => ({ ...prev, [key]: event.value }))
 		}
 	};
 
-	const handleFileChange = (key, file) => {
-		setFormData((prev) => ({
-			...prev,
-			file: {
-				...prev.file,
-				[key]: file
-			}
-		}));
-	};
+	const [addSCORE, { loading: addLoading }] = useMutation(ADD_PlAYER_SCORE, {
+		onCompleted: (data) => {
+			refetch(), navigate("/scores", { replace: true });
+			
+		}
+	  });
+	
+	const [updateSCORE, { loading: updateLoading }] = useMutation(UPDATE_PlAYER_SCORE, {
+		onCompleted: (data) => {
+		  navigate("/scores", { replace: true });
+		}
+	});
+
 
 	// handle form
 	const handleSubmit = (e) => {
 		e.preventDefault()
-		console.log(formData)
 		let variables = formData
-		if (isUpdating) {
-			variables.nodeId = id
-			updatePlayer({ variables })
+		variables.value = subCriteriaValues;
+		variables.playerId = profile.id
+		if (isUpdating || recordId) {
+			variables.nodeId = recordId
+			updateSCORE({ variables })
 		} else {
-			addPlayer({ variables })
+			addSCORE({ variables })																																					
 		}
 	}
+
+	console.log({
+		formData,
+		subCriteriaValues
+	})
+
+	useEffect(() => {
+       
+    });
 
 	return (
 		<>
@@ -132,45 +154,91 @@ const ManageScore = (props) => {
 						<div className="col-span-12 lg:col-span-12 px-3 pt-3 pb-0">
 							<h4 className="font-bold mb-0"></h4>
 						</div>
-						<div className="col-span-6 lg:col-span-6 p-3">
-							<div className="mt-2">
-								<label htmlFor="crud-form-6" className="form-label">Player <span className="text-theme-6">*</span></label>
-								<Select
-									id="crud-form-6"
-									placeholder={'Choose One...'}
-									options={positionOptions}
-									value={positionOptions.find(e => e.value == formData.position)}
-									onChange={(e) => handleSelectChange('position', e)}
-								/>
-							</div>
-						</div>
 
-						<div className="col-span-6 lg:col-span-8 p-3">
+						<div className="col-span-6 lg:col-span-6 p-3">
 							<TextInput
 								// required
-								label="Join date"
-								placeholder="Join date"
-								value={formData.joinDate}
-								onChange={(e) => handleChange('joinDate', e)}
+								label="Player Name"
+								placeholder="Player Name"
+								value={(profile?.name) ?? null }
+								disabled={true}
 							/>
-
-							<DatePicker
-								// required
-								label="Club From"
-								placeholder="Club From"
-								value={formData.clubFrom}
-								onChange={(e) => handleChange('clubFrom', e)}
-							/>
-
-							<TextArea
-								// required
-								label="Note"
-								placeholder="Note"
-								value={formData.note}
-								onChange={(e) => handleChange('note', e)}
-							/>
-
 						</div>
+						<div className="col-span-6 lg:col-span-6 p-3">
+							<TextInput
+								// required
+								label="Player Number"
+								placeholder="Player Number"
+								value={(profile?.backNumber) ?? null }
+								disabled={true}
+							/>
+						</div>
+
+						{(!progress) ? (
+							<>
+								{allCategories.map(category => {
+									return (
+										<>
+											<div className="col-span-6 lg:col-span-6 p-3">
+												<div className="mt-2">
+													<div className="col-span-12 lg:col-span-12 pb-0">
+														<h2 style={{
+															borderBottom: '1px solid #0000002b',
+															background: '#edf2f7',
+															padding: '10px',
+															margin: '0 0 10px'
+														}} className="font-bold mb-0"> {category.title}</h2>
+													</div>
+													{category.subCriteria.nodes.map(subCriteria => {
+														//console.log()
+														if (subCriteria?.position && subCriteria.position.includes(profile?.position)) {
+															let options = percentages;
+															console.log(subCriteria)
+															if (subCriteria?.values?.nodes && subCriteria?.values?.totalCount) {
+																options = subCriteria.values.nodes.map(opt => {
+																	return {
+																		label: `${opt.name} (${opt.value})`,
+																		value: opt.value
+																	}
+																})
+															}
+															return (
+																<div className="mt-4">
+																	<label htmlFor="crud-form-6" className="form-label"> {subCriteria.name}</label>
+																	<Select
+																		id="crud-form-6"
+																		placeholder={'Choose One...'}
+																		options={options}
+																		value={options.find(e => {
+																			if (subCriteriaValues[subCriteria.id] && e.value === subCriteriaValues[subCriteria.id]) {
+																				return true
+																			}
+																			
+																			return false
+																		} )}
+																		onChange={(e) => handleSelectChanges(subCriteria.id, e)}
+																	/>
+																	<p className="form-help">Ideal Value : {subCriteria.idealValue}</p>
+																</div>
+															)
+														}
+													})}
+
+													{(category.subCriteria.totalCount <= 0 ) ? (<p>Not Criteria found</p>) : (null)}
+													
+												</div>
+											</div>
+										</>
+									)
+								})}
+								
+							</>
+						): (
+								null
+						) }
+						
+						
+							
 						
 						<div className="col-span-12 lg:col-span-12 p-3">
 							<div className="text-right mt-5">

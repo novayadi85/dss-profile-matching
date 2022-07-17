@@ -24,6 +24,41 @@ const Modal = (props) => {
 };
 export default Modal
 
+
+export function RestrictDelete(props) {
+
+  const { open, setOpen, onConfirm } = props
+
+  return (
+    <Modal
+      open={open}
+    >
+      <div className="modal-body p-0">
+        <div className="p-5 text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="feather feather-x-circle w-16 h-16 text-theme-6 mx-auto mt-3"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+          <div className="text-3xl mt-5">SORRY!!!</div>
+          <div className="text-gray-600 mt-2">
+            You dont have access to do this.
+            <br />
+            Please contact your administrator or developer.
+          </div>
+        </div>
+        <div className="px-5 pb-8 text-center">
+          <button
+            type="button"
+            className="btn btn-outline-secondary w-24 dark:border-dark-5 dark:text-gray-300 mr-1"
+            onClick={() => setOpen(false)}
+          >Close</button>
+          
+        </div>
+      </div>
+    </Modal>
+  )
+}
+
+
+
+
 export function ModalDelete(props) {
 
   const { open, setOpen, onConfirm } = props

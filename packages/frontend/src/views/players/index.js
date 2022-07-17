@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Routes, Route, Link } from 'react-router-dom';
 import cash from "cash-dom";
 import PrivateLayout from '@components/layout/privateLayout';
 import Table from '@components/Table';
 import ManageUser from './manage';
-import { QUERY_ALL_PLAYER } from '@gql/player';
+import { QUERY_ALL_PLAYER, DELETE_PLAYER } from '@gql/player';
+import { ModalDelete } from "@components/overlay/modal"
+import { useMutation } from '@apollo/client';
+
+
+const usingByFormater = (cell) => `<button class="btn btn-rounded btn-dark me-1 ">${cell.getValue()}</button>`
 
 const columns = [
-  { title: "Number", field: "backNumber", width: 100  },
+  { title: "Number", field: "backNumber", width: 100 , formatter: usingByFormater },
   { title: "Name", field: "name" },
   { title: "Birth", field: "birth" },
   { title: "Position", field: "position" },
@@ -17,14 +22,49 @@ const searchFieldName = ["email"]
 
 const DefaultPage = () => {
   let navigate = useNavigate();
+  const [open, setOpen] = useState(false)
+  const [selectedId, setSelectedId] = useState('')
+
+  const [deleteData, { data, loading, error }] = useMutation(DELETE_PLAYER, {
+    onCompleted: (data) => {
+      setOpen(false)
+    }
+  });
+  
+  const handleDelete = () => {
+    deleteData({
+      variables: {
+        nodeId: selectedId
+      }
+    })
+  }
 
   const tableAction = (cell) => {
-    const { row, action } = cell
-    return (action == "edit") ? navigate(`/players/${row._nodeId}`) : cash("#delete-confirmation-modal").modal("show");
+    console.log(cell)
+    const { action, row } = cell
+
+    switch (action) {
+      case "delete":
+        setSelectedId(row._nodeId)
+        setOpen(true) 
+        break;
+
+      case "edit":
+        navigate(`/players/${row._nodeId}`)
+        break;
+
+      default:
+        break;
+    }
   }
 
   return (
     <>
+      <ModalDelete
+        open={open}
+        setOpen={setOpen}
+        onConfirm={() => handleDelete()}
+        />
       <div className="intro-y flex flex-col sm:flex-row items-center mt-8">
         <h2 className="text-lg font-medium mr-auto">
           {'Player data'} 

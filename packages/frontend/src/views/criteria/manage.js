@@ -9,7 +9,7 @@ import { ADD_CRITERIA, UPDATE_CRITERIA } from "@gql/criteria";
 import { QUERY_ALL_CATEGORY } from "@gql/category";
 import { GET_CRITERIA, QUERY_ALL_SUB_CRITERIA } from "@gql/criteria";
 import Table from '@components/Table';
-import { positions } from '../../helpers/position';
+import { positions } from '@helpers/position';
 
 const ManageUser = (props) => {
 	const navigate = useNavigate()
@@ -83,17 +83,19 @@ const ManageUser = (props) => {
 	});
 
 	const [addCriteria, { loading: addLoading }] = useMutation(ADD_CRITERIA, {
-		
+			
 		onCompleted: (data) => {
 			const { createCriterion } = data
-		  navigate(`/criteria/${createCriterion.criterion._nodeId}`, { replace: true });
+		  //navigate(`/criteria/${createCriterion.criterion._nodeId}`, { replace: true });
+		  navigate(`/criteria`)
 		}
 	  });
 	
 	const [updateCriteria, { loading: updateLoading }] = useMutation(UPDATE_CRITERIA, {
 		onCompleted: (data) => {
 			const { updateCriterion } = data
-		  navigate(`/criteria/${updateCriterion.criterion._nodeId}`, { replace: true });
+			//navigate(`/criteria/${updateCriterion.criterion._nodeId}`, { replace: true });
+			navigate(`/criteria`)
 		}
 	});
 
@@ -130,6 +132,7 @@ const ManageUser = (props) => {
 	const handleSubmit = (e) => {
 		e.preventDefault()
 		let variables = formData
+		console.log(formData)
 		variables.idealValue = Number(variables.idealValue)
 		if (isUpdating) {
 			variables.nodeId = id
@@ -222,8 +225,9 @@ const ManageUser = (props) => {
 									id="crud-form-6"
 									placeholder={'Choose a position...'}
 									options={positions}
-									value={positions.find(e => e.value == formData.position)}
-									onChange={(e) => handleSelectChange('position', e)}
+									isMulti={true}
+									value={positions.filter(e => formData.position != null && formData.position.includes(e.value))}
+									onChange={(e) => handleSelectChange('position', e, true)}
 								/>
 							</div>
 						</div>
@@ -256,10 +260,10 @@ const ManageUser = (props) => {
 				<>
 					<div className="intro-y flex flex-col sm:flex-row items-center mt-8">
 						<h2 className="text-lg font-medium mr-auto">
-							{'Sub Criteria data'}
+							{' Sub Criteria Options'}
 						</h2>
 						<div className="w-full sm:w-auto flex mt-4 sm:mt-0">
-						<Link to={'/sub-criteria/add/'+nodeId} className="btn btn-dark mb-2">Add New SubCriteria</Link>
+						<Link to={'/sub-criteria/add/'+nodeId} className="btn btn-dark mb-2">Add New Option</Link>
 						</div>
 					</div>
 

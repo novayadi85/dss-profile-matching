@@ -73,14 +73,14 @@ const AddCondition = (props) => {
   return (
     <>
       <div className="intro-y flex items-center mt-8">
-        <h2 className="text-lg font-medium mr-auto">Add Condition</h2>
+        <h2 className="text-lg font-medium mr-auto">Add Criteria Option</h2>
       </div>
 
       <div className="grid grid-cols-12 gap-6 mt-5">
         <div className="intro-y col-span-12 lg:col-span-6">
           <div className="intro-y box p-5">
             <div>
-              <label htmlFor="crud-form-1" className="form-label">Condition <span className="text-theme-6">*</span></label>
+              <label htmlFor="crud-form-1" className="form-label">Criteria Option <span className="text-theme-6">*</span></label>
               <input
                 id="crud-form-1"
                 type="text"

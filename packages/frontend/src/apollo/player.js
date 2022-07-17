@@ -42,6 +42,7 @@ export const ADD_PlAYER = gql`
     $name: String
     $position: Positions
     $address: String
+    $photo: Upload
   ){
     createPlayer(
       input: {
@@ -51,7 +52,8 @@ export const ADD_PlAYER = gql`
           address: $address,
           name: $name,
           position: $position,
-          backNumber: $backNumber
+          backNumber: $backNumber,
+          photo: $photo
         }
       }
     ){
@@ -65,6 +67,7 @@ export const ADD_PlAYER = gql`
           name
           phone
           position
+          photo
         }
     }
   }
@@ -94,6 +97,7 @@ export const UPDATE_PLAYER = gql`
     $name: String
     $position: Positions
     $address: String
+    $photo: Upload
   ){
     updatePlayer(
       input: {
@@ -105,6 +109,7 @@ export const UPDATE_PLAYER = gql`
           name: $name,
           position: $position,
           backNumber: $backNumber
+          photo: $photo
         }
       }
     ){
@@ -118,6 +123,7 @@ export const UPDATE_PLAYER = gql`
           name
           phone
           position
+          photo
         }
     }
   }
@@ -136,6 +142,118 @@ export const GET_PLAYER = gql`
           name
           phone
           position
+          photo
+    }
+  }
+`
+
+
+export const GET_PLAYER_WITH_SCORE_BY_WEEK = gql`
+query getPlayer($nodeId: ID!, $condition: ScoreCondition ){
+  player(_nodeId: $nodeId) {
+    _nodeId
+        address
+        backNumber
+        birth
+        createdBy
+        id
+        name
+        phone
+        position
+        score: scoresByPlayerId(condition: $condition) {
+          nodes {
+            _nodeId
+            playerId
+            value
+            week
+            createdAt
+          }
+        }
+  }
+}
+`
+
+export const ADD_PlAYER_SCORE = gql`
+  mutation createScore(
+    $playerId: Int
+    $value: JSON
+    $week: Int
+  ){
+    createScore(
+      input: {
+        score: {
+          playerId: $playerId,
+          value: $value,
+          week: $week
+        }
+      }
+    ){
+      score {
+          _nodeId
+          createdAt
+          id
+          playerId
+          week
+          value
+        }
+    }
+  }
+`
+
+export const UPDATE_PlAYER_SCORE = gql`
+  mutation updateScore(
+    $nodeId: ID!
+    $playerId: Int
+    $value: JSON
+    $week: Int
+  ){
+    updateScore(
+      input: {
+        _nodeId: $nodeId,
+        scorePatch: {
+          playerId: $playerId,
+          value: $value,
+          week: $week
+        }
+      }
+    ){
+      score {
+          _nodeId
+          createdAt
+          id
+          playerId
+          week
+          value
+        }
+    }
+  }
+`
+
+export const GET_ALL_PLAYER_BY_POSITION_AND_GET_SCORES = gql`
+query allPlayers(
+    $PlayerCondition:  PlayerCondition
+    $ScoreCondition: ScoreCondition
+  ){
+    allPlayers(condition: $PlayerCondition) {
+      totalCount
+      nodes {
+        id
+        backNumber
+        name
+        phone
+        position
+        birth
+        createdBy
+        address
+        _nodeId
+        scores: scoresByPlayerId(condition: $ScoreCondition, last: 1) {
+          nodes {
+            value
+            week
+          }
+        }
+      }
+      
     }
   }
 `

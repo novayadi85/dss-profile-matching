@@ -11,7 +11,6 @@ import ErrorBoundary from '@components/errorboundary';
 import reportWebVitals from './reportWebVitals';
 
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
-
 import './assets/css/app.css';
 import "toastify-js/src/toastify.css"
 ReactDOM.render(

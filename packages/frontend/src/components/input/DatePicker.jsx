@@ -16,6 +16,7 @@ export default function DatePicker({
         value={value}
         onChange={(e) => onChange(e)}
         required={required}
+        data-ingle-mode={"true"}
       />
       {errorMessage &&
         <div className="text-theme-6 text-xs mt-2">{errorMessage}</div>

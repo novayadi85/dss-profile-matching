@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation  } from 'react-router-dom'
 import { Users, ChevronRight, Search, Inbox, CreditCard, Bell, Lock, HelpCircle, ToggleRight } from 'react-feather'
 
 import { SideMenu, SidebarMobile } from "@components/sidebar"
@@ -22,6 +22,9 @@ const PrivateLayout = ({ children }) => {
     const dispatch = useDispatch()
     const { isLogin } = useSelector(state => state.auth)
     const navigate = useNavigate()
+    const location = useLocation()
+    const [currentPage, setCurrentpage] = useState('Dashboard');
+
     const profile = {
         image: require("@assets/images/profile-13.jpg")
     };
@@ -48,10 +51,36 @@ const PrivateLayout = ({ children }) => {
         document.body.classList.add('main');
         document.body.classList.remove('login')
     }, [])
+
     useEffect(() => {
         if (!isLogin)
             navigate("/auth", { replace: true })
     }, [isLogin])
+
+    useEffect(() => {
+        if (location.pathname.includes('player')) {
+            setCurrentpage('Player')
+        }
+        else if (location.pathname.includes('criteria')) {
+            setCurrentpage('Sub Criteria')
+        }
+        else if (location.pathname.includes('user')) {
+            setCurrentpage('User')
+        }
+        else if (location.pathname.includes('category')) {
+            setCurrentpage('Criteria')
+        }
+        else if (location.pathname.includes('gap')) {
+            setCurrentpage('Gap Integrity')
+        }
+        else if (location.pathname.includes('score')) {
+            setCurrentpage('Score')
+        }
+        else {
+            setCurrentpage('Dashboard')
+        }
+
+    }, [location])
 
     return <>
         <SidebarMobile />
@@ -62,7 +91,7 @@ const PrivateLayout = ({ children }) => {
                     <div className="-intro-x breadcrumb mr-auto hidden sm:flex">
                         <a href="">Application</a>
                         <ChevronRight className="breadcrumb__icon" />
-                        <a href="" className="breadcrumb--active">Dashboard</a>
+                        <a href="" className="breadcrumb--active">{ currentPage }</a>
                     </div>
                     <div className="intro-x relative mr-3 sm:mr-6">
                         <div className="search hidden sm:block">
@@ -195,10 +224,7 @@ const PrivateLayout = ({ children }) => {
             </div>
 
         </div>
-        <div data-url="side-menu-dark-dashboard-overview-1.html" className="dark-mode-switcher cursor-pointer shadow-md fixed bottom-0 right-0 box dark:bg-dark-2 border rounded-full w-40 h-12 flex items-center justify-center z-50 mb-10 mr-10">
-            <div className="mr-4 text-gray-700 dark:text-gray-300">Dark Mode</div>
-            <div className="dark-mode-switcher__toggle border"></div>
-        </div>
+    
     </>
 }
 

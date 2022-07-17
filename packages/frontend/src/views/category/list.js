@@ -2,11 +2,16 @@ import { ModalDelete } from "@components/overlay/modal"
 import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import Table from "@components/Table"
-import { QUERY_ALL_GAPS} from "@gql/gaps"
-import { QUERY_ALL_CATEGORY } from "../../apollo/category"
+import { useMutation } from '@apollo/client';
+import { QUERY_ALL_CATEGORY, DELETE_CATEGORY } from "../../apollo/category"
+
+let number = 1;
+const autoNumber = () => {
+  return number++;
+}
 
 const columns = [
-  { title: "#ID", field: "id", width: 100 },
+  { title: "ID", field: "ID", width: 100 , mutator:autoNumber},
   { title: "Title", field: "title" },
   { title: "Percentage", field: "percentage" }
 ]
@@ -18,15 +23,28 @@ const ListCategory = (prop) => {
   const [selectedId, setSelectedId] = useState('')
   const navigate = useNavigate()
 
+  const [deleteCategory, { data, loading, error }] = useMutation(DELETE_CATEGORY, {
+    onCompleted: (data) => {
+      setOpen(false)
+    }
+  });
+  
+  const handleDelete = () => {
+    deleteCategory({
+      variables: {
+        nodeId: selectedId
+      }
+    })
+  }
+
   const tableAction = (cell) => {
-    console.log(cell)
+
     const { action, row } = cell
 
     switch (action) {
       case "delete":
-        /* setSelectedId(row._nodeId)
-        setOpen(true) */
-        alert('not access to delete')
+        setSelectedId(row._nodeId)
+        setOpen(true) 
         break;
 
       case "edit":
@@ -40,9 +58,15 @@ const ListCategory = (prop) => {
 
   return (
     <>
+      <ModalDelete
+        open={open}
+        setOpen={setOpen}
+        onConfirm={() => handleDelete()}
+        />
+        
       <div className="intro-y flex flex-col sm:flex-row items-center mt-8">
         <h2 className="text-lg font-medium mr-auto">
-          Category data
+          Criteria data
         </h2>
         <div className="w-full sm:w-auto flex mt-4 sm:mt-0">
           <Link to={'/category/create'} className="btn btn-primary shadow-md mr-2">Add New</Link>

@@ -1,39 +1,68 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Routes, Route, Link } from 'react-router-dom';
 import cash from "cash-dom";
 import PrivateLayout from '@components/layout/privateLayout';
 import Table from '@components/Table';
-import ManageScore from './manage';
-import { QUERY_ALL_PLAYER } from '@gql/player';
+import ManageUser from './manage';
+import { QUERY_ALL_PLAYER, DELETE_PLAYER } from '@gql/player';
+import { useMutation } from '@apollo/client';
+
+
+const usingByFormater = (cell) => `<button class="btn btn-rounded btn-dark me-1 ">${cell.getValue()}</button>`
 
 const columns = [
-  { title: "id", field: "id", width: 100 },
+  { title: "Number", field: "backNumber", width: 100 , formatter: usingByFormater },
   { title: "Name", field: "name" },
   { title: "Birth", field: "birth" },
   { title: "Position", field: "position" },
-  { title: "Past Club", field: "clubFrom" },
-  { title: "Join", field: "joinDate" },
-  { title: "Created at", field: "createdBy" },
+  { title: "Phone", field: "phone" },
 ]
 const searchFieldName = ["email"]
 
 const DefaultPage = () => {
   let navigate = useNavigate();
+  const [open, setOpen] = useState(false)
+  const [selectedId, setSelectedId] = useState('')
+
+  const [deleteData, { data, loading, error }] = useMutation(DELETE_PLAYER, {
+    onCompleted: (data) => {
+      setOpen(false)
+    }
+  });
+  
+  const handleDelete = () => {
+    deleteData({
+      variables: {
+        nodeId: selectedId
+      }
+    })
+  }
 
   const tableAction = (cell) => {
-    const { row, action } = cell
-    return (action == "edit") ? navigate(`/scores/${row._nodeId}`) : cash("#delete-confirmation-modal").modal("show");
+    console.log(cell)
+    const { action, row } = cell
+
+    switch (action) {
+      case "delete":
+        setSelectedId(row._nodeId)
+        setOpen(true) 
+        break;
+
+      case "edit":
+        navigate(`/scores/${row._nodeId}`)
+        break;
+
+      default:
+        break;
+    }
   }
 
   return (
     <>
       <div className="intro-y flex flex-col sm:flex-row items-center mt-8">
         <h2 className="text-lg font-medium mr-auto">
-          {'User data'}
+          {'Players'} 
         </h2>
-        <div className="w-full sm:w-auto flex mt-4 sm:mt-0">
-          <Link to={'/scores/create'} className="btn btn-primary shadow-md mr-2">Add New</Link>
-        </div>
       </div>
       {/* <DeleteUser /> */}
       <Table query={QUERY_ALL_PLAYER}
@@ -42,7 +71,7 @@ const DefaultPage = () => {
         //   paginationSize: 2,
         //   paginationSizeSelector: [2, 100, 200, 300, 400, 500],
         // }}
-        action={true}
+        action={[true, "View"]}
         callback={tableAction}
         searchFieldName={searchFieldName}
       />
@@ -50,15 +79,15 @@ const DefaultPage = () => {
   )
 }
 
-const Score = () => {
+const User = () => {
 
   return (
     <PrivateLayout>
       <Routes>
-        <Route path=":id" element={<ManageScore />} />
+        <Route path=":id" element={<ManageUser />} />
         <Route path="/" element={<DefaultPage />} />
       </Routes>
     </PrivateLayout>
   )
 }
-export default Score
+export default User

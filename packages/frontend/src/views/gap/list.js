@@ -2,22 +2,42 @@ import { ModalDelete } from "@components/overlay/modal"
 import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import Table from "@components/Table"
-import { QUERY_ALL_GAPS} from "@gql/gaps"
+import { QUERY_ALL_GAPS, DELETE_GAP} from "@gql/gaps"
+import { useMutation } from "@apollo/client"
 
-const usingByFormater = (cell) => `${cell.getValue()} Users`
+let number = 1;
+const autoNumber = () => {
+  return number++;
+}
+
 
 const columns = [
+  { title: "ID", field: "ID", width: 100 , mutator:autoNumber},
   { title: "Gap", field: "gap", width: 100 },
   { title: "Integrity", field: "integrity", width: 100 },
   { title: "Note", field: "note" }
 ]
 const searchFieldName = ["name"]
 
-const ListRole = (prop) => {
+const ListGap = (prop) => {
 
   const [open, setOpen] = useState(false)
   const [selectedId, setSelectedId] = useState('')
   const navigate = useNavigate()
+
+  const [deleteData, { data, loading, error }] = useMutation(DELETE_GAP, {
+    onCompleted: (data) => {
+      setOpen(false)
+    }
+  });
+  
+  const handleDelete = () => {
+    deleteData({
+      variables: {
+        nodeId: selectedId
+      }
+    })
+  }
 
   const tableAction = (cell) => {
     console.log(cell)
@@ -25,9 +45,9 @@ const ListRole = (prop) => {
 
     switch (action) {
       case "delete":
-        /* setSelectedId(row._nodeId)
-        setOpen(true) */
-        alert('not access to delete')
+        setSelectedId(row._nodeId)
+        setOpen(true) 
+
         break;
 
       case "edit":
@@ -41,6 +61,11 @@ const ListRole = (prop) => {
 
   return (
     <>
+      <ModalDelete
+        open={open}
+        setOpen={setOpen}
+        onConfirm={() => handleDelete()}
+        />
       <div className="intro-y flex flex-col sm:flex-row items-center mt-8">
         <h2 className="text-lg font-medium mr-auto">
           GAP data
@@ -64,4 +89,4 @@ const ListRole = (prop) => {
     </>
   );
 }
-export default ListRole;
+export default ListGap;

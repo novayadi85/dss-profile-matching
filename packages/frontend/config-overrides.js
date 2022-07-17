@@ -11,7 +11,8 @@ module.exports = function (config, env) {
     '@store': resolve("src/store"),
     '@gql': resolve("src/apollo"),
     '@routes': resolve("src/routes"),
-    '@helpers': resolve("src/helpers")
+    '@helpers': resolve("src/helpers"),
+    '@config': resolve("src/config.js")
     // etc...
   });
 

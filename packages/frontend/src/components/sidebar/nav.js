@@ -1,8 +1,9 @@
 import React from 'react';
-import { Home, Users, FileText, Film, Trello, Edit, Layout, CreditCard, HardDrive } from 'react-feather'
+import { Home, Users, Dribbble, LifeBuoy, Terminal, Target, UserCheck, Thermometer } from 'react-feather'
 import { Link, useLocation } from 'react-router-dom';
 
-import logo from '../../assets/images/logo.svg';
+import logo from '@assets/images/logo.png';
+import { site } from '@config';
 
 export const jMenu = {
     'response': 200,
@@ -22,32 +23,38 @@ export const jMenu = {
         {
             'id': 3,
             'name': 'Player',
-            'design': <HardDrive />,
+            'design': <UserCheck />,
             'path': '/players'
         },
         {
             'id': 4,
-            'name': 'Category',
-            'design': <FileText />,
+            'name': 'Criteria',
+            'design': <LifeBuoy />,
             'path': '/category'
         },
         {
             'id': 5,
-            'name': 'Critera',
-            'design': <FileText />,
+            'name': 'Sub Criteria',
+            'design': <Target />,
             'path': '/criteria'
         },
         {
             'id': 6,
             'name': 'GAP Integrity',
-            'design': <Trello />,
+            'design': <Thermometer />,
             'path': '/gap'
         },
         {
             'id': 7,
             'name': 'Scores',
-            'design': <FileText />,
+            'design': <Dribbble />,
             'path': '/scores'
+        },
+        {
+            'id': 8,
+            'name': 'Calculation',
+            'design': <Terminal />,
+            'path': '/rating'
         },
     ]
 };
@@ -77,8 +84,8 @@ const SideMenu = () => {
     return (
         <nav className="side-nav">
             <Link to='' className="intro-x flex items-center pl-5 pt-4">
-                <img alt={'DSS LINEUP SOCCER'} className="w-6" src={logo} />
-                <span className="hidden xl:block text-white text-lg ml-3"> DSS<span className="font-medium">SOCCER</span> </span>
+                <img alt={site.name} className="w-8" src={logo} />
+                <span className="hidden xl:block text-white text-lg ml-3"> {site.name} </span>
             </Link>
             <div className="side-nav__devider my-6"></div>
             <ul><MappingMenu location={location} /></ul>

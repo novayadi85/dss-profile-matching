@@ -8,8 +8,13 @@ import { useState } from 'react';
 import { ModalDelete } from '../../components/overlay/modal';
 import { useMutation } from '@apollo/client';
 
+let number = 1;
+const autoNumber = () => {
+  return number++;
+}
+
 const columns = [
-  //{ title: "id", field: "id", width: 100 },
+  { title: "ID", field: "ID", width: 100 , mutator: autoNumber},
   { title: "Name", field: "name" },
   { title: "Type", field: "type" },
   { title: "Position", field: "position" },
@@ -46,6 +51,7 @@ const DefaultPage = () => {
       setOpen(false)
     }
   });
+  
   const handleDelete = () => {
     deleteCriterion({
       variables: {
@@ -63,7 +69,7 @@ const DefaultPage = () => {
 
     <div className="intro-y flex flex-col sm:flex-row items-center mt-8">
       <h2 className="text-lg font-medium mr-auto">
-        {'Criteria data'}
+        {'Sub Criteria data'}
       </h2>
       <div className="w-full sm:w-auto flex mt-4 sm:mt-0">
         <Link to={'/criteria/create'} className="btn btn-primary shadow-md mr-2">Add New</Link>

@@ -5,7 +5,7 @@ import {
 } from 'react-router-dom'
 
 import MainRoutes from "./routes";
-
+import { site } from '@config';
 import '@theme/js/app';
 import './styles/rubic/js/app';
 import {Helmet} from 'react-helmet';
@@ -27,7 +27,7 @@ const App = () => {
     return (
         <Router> 
             <Helmet>
-                <title>DSS LINEUP SOCCER</title>
+                <title>{ site.name}</title>
                 <link data-react-helmet="true" rel="icon" type="image/png" href={favicon} sizes="32x32"/>
             </Helmet>
             <MainRoutes />

@@ -5,6 +5,8 @@ import xlsx from "xlsx";
 import { getOperationName } from "@apollo/client/utilities";
 import cash from "cash-dom";
 import { getToken } from '@helpers/auth'
+import store from "@store/store"
+import { logout } from '@store/auth/action';
 
 function getGqlString(doc) {
     return doc.loc && doc.loc.source.body;
@@ -40,7 +42,7 @@ const setup = (
         columns = columns.filter(item => item.title != "ACTIONS");
         columns.push({
             title: "ACTIONS",
-            width: 160,
+            width: 100,
             field: "actions",
             responsive: 1,
             hozAlign: "right",
@@ -130,6 +132,9 @@ const setup = (
         ajaxFiltering: true,
         ajaxSorting: true,
         ajaxConfig: "POST",
+        ajaxError: function ({status}) {
+            if(status === 401) store.dispatch(logout())
+        },
         ajaxContentType: {
             headers: {
                 'Content-type': 'application/json',
@@ -185,7 +190,6 @@ const setup = (
             const operationName = getOperationName(query);
             const { data } = response;
             const graphqlData = data;
-            console.log(graphqlData)
             const resp = graphqlData[`${operationName}`];
 
             const { nodes, totalCount = null, pageInfo = { startCursor: null, endCursor: null } } = resp;

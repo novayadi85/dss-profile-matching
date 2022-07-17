@@ -24,7 +24,7 @@ export const ADD_CRITERIA = gql`
 mutation createCriterion(
   $name: String!
   $type: Types
-  $position: String 
+  $position: [Positions] 
   $idealValue: Int
   $parentId: Int
 ){
@@ -71,7 +71,7 @@ export const UPDATE_CRITERIA = gql`
     $nodeId: ID!
     $name: String!
     $type: Types
-    $position: String 
+    $position: [Positions] 
     $idealValue: Int
     $parentId: Int
 
@@ -142,6 +142,74 @@ export const GET_CRITERIA = gql`
   }
 `
 
+export const GET_CRITERIA_WITH_CHILDS = gql`query MyQuery($contains: [Positions]) {
+  allCategories {
+    nodes {
+      _nodeId
+      id
+      percentage
+      title
+      subCriteria: criteriaByParentId(filter: {position: {contains: $contains}})   {
+        nodes {
+          _nodeId
+          name
+          id
+          idealValue
+          type
+          position
+          parentId
+          values: subCriteriaByParentId {
+            nodes {
+              id
+              name
+              value
+              _nodeId
+            }
+            totalCount
+          }
+        }
+        totalCount
+      }
+    }
+    totalCount
+  }
+}
+
+`
+
+
+export const GET_CRITERIA_WITH_ALL_CHILDS = gql`query MyQuery{
+  allCategories {
+    nodes {
+      _nodeId
+      id
+      percentage
+      title
+      subCriteria: criteriaByParentId {
+        nodes {
+          _nodeId
+          name
+          id
+          idealValue
+          type
+          position
+          parentId
+          values: subCriteriaByParentId {
+            nodes {
+              id
+              name
+              _nodeId
+            }
+          }
+        }
+        totalCount
+      }
+    }
+    totalCount
+  }
+}
+
+`
 
 /*
 

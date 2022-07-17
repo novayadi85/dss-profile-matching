@@ -29,12 +29,22 @@ const authLink = setContext((_, { headers }) => {
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
-        graphQLErrors.forEach(({ message, locations, path, extensions: { code }, ...o }) => {
-            console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path},Code:${code}`)
-            if (code === "UNAUTHENTICATED") {
-                store.dispatch(logout())
+        for (let err of graphQLErrors) {
+            const { message, locations, path, extensions, ...o } = err;
+            if (extensions?.code) {
+                switch (extensions.code) {
+                    // Apollo Server sets code to UNAUTHENTICATED
+                    // when an AuthenticationError is thrown in a resolver
+                    case "UNAUTHENTICATED":
+                      // Modify the operation context with a new token
+                      store.dispatch(logout())
+                }
             }
-        });
+
+            if(message === 'jwt expired') store.dispatch(logout())
+            
+        }
+        
     }
 
     if (networkError) console.log(`[Network error]: ${networkError}`);

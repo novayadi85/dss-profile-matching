@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from "react"
 import { useNavigate, Routes, Route, Link } from 'react-router-dom';
 import cash from "cash-dom";
 import PrivateLayout from '@components/layout/privateLayout';
 import Table from '@components/Table';
 import ManageUser from './manage';
 import { QUERY_ALL_USER_WITH_VARIABLE } from '@gql/users';
+import { RestrictDelete } from '../../components/overlay/modal';
 
 const columns = [
   { title: "id", field: "id", width: 100 },
@@ -15,14 +16,34 @@ const searchFieldName = ["email"]
 
 const DefaultPage = () => {
   let navigate = useNavigate();
+  const [open, setOpen] = useState(false)
+  const [selectedId, setSelectedId] = useState('')
 
   const tableAction = (cell) => {
-    const { row, action } = cell
-    return (action == "edit") ? navigate('/users/' + row._nodeId) : cash("#delete-confirmation-modal").modal("show");
-  }
+
+    const { action, row } = cell
+
+    switch (action) {
+      case "delete":
+        setSelectedId(row._nodeId)
+        setOpen(true) 
+        break;
+
+      case "edit":
+        navigate(`/users/${row._nodeId}`)
+        break;
+
+      default:
+        break;
+    }
+}
 
   return (
     <>
+      <RestrictDelete open={open}
+        setOpen={setOpen}
+        onConfirm={() => setOpen(false)}
+      />
       <div className="intro-y flex flex-col sm:flex-row items-center mt-8">
         <h2 className="text-lg font-medium mr-auto">
           {'User data'}

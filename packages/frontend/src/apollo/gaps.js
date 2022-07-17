@@ -105,3 +105,16 @@ export const UPDATE_GAP = gql`
     }
   }
 `
+
+
+export const DELETE_GAP = gql`
+  mutation deleteGap($nodeId: ID!){
+    deleteGap(
+      input: {
+        _nodeId: $nodeId
+      }
+    ){
+      deletedGapId
+    }
+  }
+`

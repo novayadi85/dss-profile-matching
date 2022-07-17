@@ -1,5 +1,5 @@
 .toastify {
-    background: none;
+    background: none !important;
     @apply shadow-none text-gray-800 p-0;
     @include media-breakpoint-down(md) {
         max-width: calc(100% - 30px);

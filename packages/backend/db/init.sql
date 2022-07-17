@@ -156,7 +156,7 @@ CREATE TABLE dss_public.players (
   created_by integer DEFAULT dss_public.current_user_id()
 );
 
-ALTER TABLE dss_public.sub_criteria ADD FOREIGN KEY ("parent_id") REFERENCES dss_public.criteria(id);
+ALTER TABLE dss_public.sub_criteria ADD FOREIGN KEY ("parent_id") REFERENCES dss_public.criteria(id) ON DELETE CASCADE ;
 ALTER TABLE dss_public.ratings ADD FOREIGN KEY ("player_id") REFERENCES dss_public.players(id);
 ALTER TABLE dss_public.ratings ADD FOREIGN KEY ("created_by") REFERENCES dss_public.user(id);
 ALTER TABLE dss_public.criteria ADD FOREIGN KEY ("created_by") REFERENCES dss_public.user(id);
@@ -201,7 +201,7 @@ ALTER TABLE dss_public.players
 
 
 ALTER TABLE dss_public.criteria
-    ADD COLUMN "position" character varyin;
+    ADD COLUMN "position" positions[];
 
 ALTER TABLE dss_public.criteria
     ADD COLUMN ideal_value integer NOT NULL DEFAULT 0;
@@ -211,35 +211,34 @@ CREATE TABLE dss_public.categories (
   "id" SERIAL PRIMARY KEY,
   "title" varchar,
   "percentage" integer DEFAULT 0,
-  created_by integer DEFAULT dss_public.current_user_id()
+  created_by integer DEFAULT dss_public.current_user_id(),
+
 );
 
 
 GRANT INSERT, UPDATE, DELETE ON TABLE dss_public.categories TO dss_authenticated; 
 
-ALTER TABLE dss_public.criteria ADD FOREIGN KEY ("parent_id") REFERENCES dss_public.categories(id);
+ALTER TABLE dss_public.criteria ADD FOREIGN KEY ("parent_id") REFERENCES dss_public.categories(id) ON DELETE CASCADE ;
 
-ALTER TABLE dss_public.criteria
-    ADD COLUMN parent_id integer;
+ALTER TABLE dss_public.criteria ADD COLUMN parent_id integer;
 
 
-CREATE TABLE dss_public.score
-(
-    sub_criteria_id integer,
-    player_id integer,
-    value integer,
-)
-WITH (
-    OIDS = FALSE
+CREATE TABLE dss_public.score (
+  "id" SERIAL PRIMARY KEY,
+  player_id integer,
+  value json,
+  created_at  timestamp without time zone,
+    created_by integer DEFAULT dss_public.current_user_id(),
+  week integer
 );
 
-ALTER TABLE dss_public.score
-    OWNER to postgres;
+ALTER TABLE dss_public.ratings ADD COLUMN player_id integer;
 
-GRANT INSERT, UPDATE, DELETE ON TABLE dss_public.score TO dss_authenticated; 
+GRANT INSERT, UPDATE, DELETE, SELECT ON TABLE dss_public.score TO dss_authenticated; 
+ALTER TABLE dss_public.score ADD FOREIGN KEY ("player_id") REFERENCES dss_public.players(id) ON DELETE CASCADE;
+ALTER TABLE dss_public.score ADD FOREIGN KEY ("player_id") REFERENCES dss_public.players(id) ON DELETE CASCADE;
+ALTER TABLE dss_public.ratings ADD FOREIGN KEY ("player_id") REFERENCES dss_public.players(id) ON DELETE CASCADE;
 
-ALTER TABLE dss_public.score ADD FOREIGN KEY ("sub_criteria_id") REFERENCES dss_public.sub_criteria(id);
-ALTER TABLE dss_public.score ADD FOREIGN KEY ("player_id") REFERENCES dss_public.player(id);
 GRANT INSERT, UPDATE, DELETE ON TABLE dss_public.gap TO dss_authenticated; 
 GRANT INSERT, UPDATE, DELETE ON TABLE dss_public.category TO dss_authenticated; 
 
@@ -250,3 +249,13 @@ CREATE TABLE dss_public.aspec (
   "percentage" int,
   created_by integer DEFAULT dss_public.current_user_id()
 );
+
+
+ALTER TABLE dss_public.score
+    ADD COLUMN week integer;
+
+ALTER TABLE dss_public.score
+    ADD COLUMN created_at timestamp without time zone;
+
+ALTER TABLE dss_public.score
+    ADD COLUMN value json;

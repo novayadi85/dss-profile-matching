@@ -13,6 +13,7 @@ import Category from "@views/category";
 import Criteria from "@views/criteria";
 import SubCriteria from "@views/subcriteria";
 import Score from '@views/scores';
+import Calculate from '@views/calculation';
 import Signin from "@views/auth/signin";
 import SignOut from "@views/auth/signout";
 import SignUp from "@views/auth/signUp";
@@ -27,7 +28,8 @@ const MainRoutes = () => {
         <Route path="/auth/*" element={<Signin />} />
         {/* req auth */}
         <Route path="/users/*" element={<RequestAuth><User /></RequestAuth>} />
-        <Route path="/scores/*" element={<RequestAuth><Dashboard /></RequestAuth>} />
+        <Route path="/rating/*" element={<RequestAuth><Calculate /></RequestAuth>} />
+        <Route path="/scores/*" element={<RequestAuth><Score /></RequestAuth>} />
         <Route path="/category/*" element={<RequestAuth><Category /></RequestAuth>} />
         <Route path="/gap/*" element={<RequestAuth><Gap /></RequestAuth>} />
         <Route path="/sub-criteria/*" element={<RequestAuth><SubCriteria /></RequestAuth>} />

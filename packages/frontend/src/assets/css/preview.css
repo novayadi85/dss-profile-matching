@@ -1,0 +1,103 @@
+#preview #preview-lineups {
+    max-width: 1024px;
+    margin: 0 ;
+    overflow: hidden;
+}
+
+.pitch {
+    position: relative;
+    margin: 0 auto;
+    width: 668px;
+    height: 369px;
+    background: transparent url("../images/pitch6.png") no-repeat right top; 
+}
+
+#preview .pitch .home, #preview .pitch .away {
+    position: unset;
+}
+
+#preview .home {
+    text-align: left;
+}
+.pitch .home {
+    float: left;
+}
+.pitch .home, .pitch .away {
+    position: relative;
+    width: 50%;
+}
+
+.pitch .player {
+    position: absolute;
+}
+
+.pitch .player-name-wrapper {
+    text-align: center;
+    white-space: nowrap;
+    zoom: 1;
+}
+
+
+.pitch .player-link {
+    color: #fff;
+    line-height: 1.1em;
+}
+.pitch .player-name {
+    color: #999;
+    font-weight: bold;
+    margin-left: -100%;
+    padding: 0.3em;
+    text-align: center;
+}
+.cnt-oflow {
+    margin-left: -100% !important;
+    margin-right: -100% !important;
+}
+
+#preview .pitch .player-name {
+    padding: 0;
+    zoom: 1;
+    color: #fff;
+    font-size: 16px;
+}
+
+.pitch .player-rating {
+    background-color: #0a0bc1;
+    color: #FFFFFF;
+    display: inline-block;
+    font-size: 16px;
+    height: 1.4em;
+    line-height: 1.4em;
+    width: 2.5em;
+}
+
+#preview .pitch .player-rating {
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 16px;
+}
+#preview .pitch .player-rating {
+    text-align: center;
+    padding: 0.1em;
+}
+
+
+
+@media screen and (min-width: 668px){
+    #preview .pitch {
+        position: relative;
+        margin: 0 auto;
+        width: 100vw;
+        height: 51vw;
+        max-width: 1024px;
+        max-height: 480px;
+        /* background: transparent url(/img/pitch6.svg) no-repeat right top; */
+        background-size: 100% 100%;
+    }
+
+    #preview .pitch .home, #preview .pitch .away {
+        position: unset;
+    }
+}
+
+
