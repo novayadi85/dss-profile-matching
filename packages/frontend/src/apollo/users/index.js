@@ -120,3 +120,57 @@ export const GET_USER = gql`
     }
   }
 `
+
+export const UPDATE_USER = gql`
+  mutation updateUser(
+    $_nodeId: ID!
+    $firstName: String
+    $lastName: String
+  ) {
+  updateUser(
+    input: {
+      _nodeId: $_nodeId, 
+      userPatch: {
+        firstName: $firstName,
+        lastName: $lastName
+      }
+    }
+  ) {
+    user {
+      _nodeId
+    }
+  }
+}
+
+`
+export const GET_ACCOUNT = gql`
+mutation userAccountById($id: Int!){
+  userAccountById(input: {id: $id}) {
+    userAccount {
+      email
+      userId
+    }
+  }
+}
+`
+
+export const MODIFY_ACCOUNT = gql`
+  mutation modifyUser(
+    $firstname: String!
+    $lastname: String!
+    $username: String!
+    $password: String!
+    $userid: Int!
+  ){
+    modifyUser(
+      input: {firstname: $firstname, lastname: $lastname, username: $username, password: $password, userid: $userid}
+    ) {
+      user {
+        _nodeId
+        firstName
+        lastName
+        createdAt
+      }
+    }
+}
+`

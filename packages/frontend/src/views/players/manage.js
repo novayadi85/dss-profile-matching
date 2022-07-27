@@ -12,11 +12,13 @@ import { FileUploader } from "react-drag-drop-files";
 import { ADD_PlAYER, UPDATE_PLAYER, GET_PLAYER } from "@gql/player";
 import { positions } from "@helpers/position";
 import DatePicker from "@components/input/DatePicker";
+import { useTranslation } from "react-i18next";
 const env = process.env;
 
 const defaultImage = '/logo512.png';
 
 const ManageUser = (props) => {
+	const { t } = useTranslation();
 	const navigate = useNavigate()
   	const { id } = useParams()
 	const [recordId, setRecordId] = useState(false)
@@ -171,7 +173,7 @@ const ManageUser = (props) => {
 	return (
 		<>
 			<div className="intro-y flex items-center mt-8">
-				<h2 className="text-lg font-medium mr-auto">{isUpdating ? "Edit" : "Add"} Player</h2>
+				<h2 className="text-lg font-medium mr-auto">{isUpdating ? t("Edit") : t("Add")} {t("Player")}</h2>
 			</div>
 			<div className="intro-y box p-2 mt-5">
 				<form onSubmit={(e) => handleSubmit(e)}>
@@ -184,7 +186,7 @@ const ManageUser = (props) => {
 								<div className="mt-2 w-full">
 									<TextInput
 										// required
-										label="Full name"
+										label={t("Full name")}
 										placeholder="Full Name"
 										value={formData.name}
 										onChange={(e) => handleChange('name', e)}
@@ -195,10 +197,10 @@ const ManageUser = (props) => {
 
 							<div className="col-span-6 lg:col-span-6 p-3">
 								<div className="mt-2">
-									<label htmlFor="crud-form-6" className="form-label">Position <span className="text-theme-6">*</span></label>
+									<label htmlFor="crud-form-6" className="form-label">{t("Position")} <span className="text-theme-6">*</span></label>
 									<Select
 										id="crud-form-6"
-										placeholder={'Choose One...'}
+										placeholder={t("Choose one..")}
 										options={positions}
 										value={positions.find(e => e.value == formData.position)}
 										onChange={(e) => handleSelectChange('position', e)}
@@ -211,7 +213,7 @@ const ManageUser = (props) => {
 								<div className="mt-2 w-2/4">
 									<TextInput
 										// required
-										label="Back Number"
+										label={t("Number")}
 										placeholder="Back Number"
 										value={formData.backNumber}
 										onChange={(e) => handleChange('backNumber', e)}
@@ -223,7 +225,7 @@ const ManageUser = (props) => {
 								<div className="mt-2 w-full">
 									<DatePicker
 										// required
-										label="Birth day"
+										label={t("Birth")}
 										placeholder="Birth day"
 										value={formData.birth}
 										onChange={(e) => handleChange('birth', e)}
@@ -235,7 +237,7 @@ const ManageUser = (props) => {
 								<div className="mt-2 w-full">
 									<TextInput
 										// required
-										label="Phone"
+										label={t("Phone")}
 										placeholder="Phone"
 										value={formData.phone}
 										onChange={(e) => handleChange('phone', e)}
@@ -247,7 +249,7 @@ const ManageUser = (props) => {
 								<div className="mt-2 w-full">
 									<TextArea
 										// required
-										label="Address"
+										label={t("Address")}
 										placeholder="Address"
 										value={formData.address}
 										onChange={(e) => handleChange('address', e)}
@@ -257,8 +259,8 @@ const ManageUser = (props) => {
 							
 							<div className="col-span-12 lg:col-span-12 p-3">
 								<div className="text-right mt-5">
-									<button type="button" onClick={() => navigate('/players')} className="btn btn-outline-secondary w-24 mr-1">Cancel</button>
-									<button type="submit" className="btn btn-primary w-24">Save</button>
+									<button type="button" onClick={() => navigate('/players')} className="btn btn-outline-secondary w-24 mr-1">{t('Cancel')}</button>
+									<button type="submit" className="btn btn-primary w-24">{t('Save')}</button>
 								</div>
 							</div>
 						</div>
@@ -278,7 +280,7 @@ const ManageUser = (props) => {
 						</div>
 					</div>
 				</form>
-				{error && <p>Error : Please try again</p>}
+				{error && <p>Error : {t('Please try again')}</p>}
 			</div>
 		</>
 	);

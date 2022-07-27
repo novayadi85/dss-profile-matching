@@ -11,9 +11,11 @@ import { percentage } from '@helpers/value';
 import { getWeek } from '@helpers/date';
 import { GET_PLAYER_WITH_SCORE_BY_WEEK, UPDATE_PlAYER_SCORE , ADD_PlAYER_SCORE } from "@gql/player";
 import { GET_CRITERIA_WITH_CHILDS } from "@gql/criteria";
+import { useTranslation } from "react-i18next";
 
 const ManageScore = (props) => {
 	const navigate = useNavigate()
+	const { t } = useTranslation();
   	const { id } = useParams()
 	const [progress, setProgress] = useState(true)
 	const [recordId, setRecordId] = useState(false)
@@ -145,7 +147,7 @@ const ManageScore = (props) => {
 	return (
 		<>
 			<div className="intro-y flex items-center mt-8">
-				<h2 className="text-lg font-medium mr-auto">{isUpdating ? "Edit" : "Add"} Score</h2>
+				<h2 className="text-lg font-medium mr-auto">{isUpdating ? t("Edit") : t("Add")} {t('Score')}</h2>
 			</div>
 			<div className="intro-y box p-2 mt-5">
 				<form onSubmit={(e) => handleSubmit(e)}>
@@ -158,7 +160,7 @@ const ManageScore = (props) => {
 						<div className="col-span-6 lg:col-span-6 p-3">
 							<TextInput
 								// required
-								label="Player Name"
+								label={t("Player Name")}
 								placeholder="Player Name"
 								value={(profile?.name) ?? null }
 								disabled={true}
@@ -167,7 +169,7 @@ const ManageScore = (props) => {
 						<div className="col-span-6 lg:col-span-6 p-3">
 							<TextInput
 								// required
-								label="Player Number"
+								label={t("Number")}
 								placeholder="Player Number"
 								value={(profile?.backNumber) ?? null }
 								disabled={true}
@@ -207,7 +209,7 @@ const ManageScore = (props) => {
 																	<label htmlFor="crud-form-6" className="form-label"> {subCriteria.name}</label>
 																	<Select
 																		id="crud-form-6"
-																		placeholder={'Choose One...'}
+																		placeholder={t("Choose One..")}
 																		options={options}
 																		value={options.find(e => {
 																			if (subCriteriaValues[subCriteria.id] && e.value === subCriteriaValues[subCriteria.id]) {
@@ -218,13 +220,13 @@ const ManageScore = (props) => {
 																		} )}
 																		onChange={(e) => handleSelectChanges(subCriteria.id, e)}
 																	/>
-																	<p className="form-help">Ideal Value : {subCriteria.idealValue}</p>
+																	<p className="form-help">{t("Ideal Value")}: {subCriteria.idealValue}</p>
 																</div>
 															)
 														}
 													})}
 
-													{(category.subCriteria.totalCount <= 0 ) ? (<p>Not Criteria found</p>) : (null)}
+													{(category.subCriteria.totalCount <= 0 ) ? (<p>{t("Not Criteria found")}</p>) : (null)}
 													
 												</div>
 											</div>
@@ -242,8 +244,8 @@ const ManageScore = (props) => {
 						
 						<div className="col-span-12 lg:col-span-12 p-3">
 							<div className="text-right mt-5">
-								<button type="button" onClick={() => navigate('/players')} className="btn btn-outline-secondary w-24 mr-1">Cancel</button>
-								<button type="submit" className="btn btn-primary w-24">Save</button>
+								<button type="button" onClick={() => navigate('/players')} className="btn btn-outline-secondary w-24 mr-1">{t('Cancel')}</button>
+								<button type="submit" className="btn btn-primary w-24">{t('Save')}</button>
 							</div>
 						</div>
 					</div>

@@ -1,5 +1,5 @@
 import cash from "cash-dom";
-import React, { useEffect } from 'react'
+import React, { useEffect, Suspense } from 'react'
 import {
     BrowserRouter as Router, Route,
 } from 'react-router-dom'
@@ -30,7 +30,9 @@ const App = () => {
                 <title>{ site.name}</title>
                 <link data-react-helmet="true" rel="icon" type="image/png" href={favicon} sizes="32x32"/>
             </Helmet>
-            <MainRoutes />
+            <Suspense fallback="loading">
+                <MainRoutes />
+            </Suspense>
         </Router>
     )
 }

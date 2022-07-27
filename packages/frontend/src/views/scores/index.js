@@ -6,6 +6,7 @@ import Table from '@components/Table';
 import ManageUser from './manage';
 import { QUERY_ALL_PLAYER, DELETE_PLAYER } from '@gql/player';
 import { useMutation } from '@apollo/client';
+import { useTranslation } from 'react-i18next';
 
 
 const usingByFormater = (cell) => `<button class="btn btn-rounded btn-dark me-1 ">${cell.getValue()}</button>`
@@ -17,9 +18,10 @@ const columns = [
   { title: "Position", field: "position" },
   { title: "Phone", field: "phone" },
 ]
-const searchFieldName = ["email"]
+const searchFieldName = ["name", "backNumber"]
 
 const DefaultPage = () => {
+  const { t } = useTranslation();
   let navigate = useNavigate();
   const [open, setOpen] = useState(false)
   const [selectedId, setSelectedId] = useState('')
@@ -61,7 +63,7 @@ const DefaultPage = () => {
     <>
       <div className="intro-y flex flex-col sm:flex-row items-center mt-8">
         <h2 className="text-lg font-medium mr-auto">
-          {'Players'} 
+          {t('Players')} 
         </h2>
       </div>
       {/* <DeleteUser /> */}

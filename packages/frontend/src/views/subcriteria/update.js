@@ -10,6 +10,9 @@ const AddCondition = (props) => {
   
   const [name, setName] = useState("")
   const [value, setValue] = useState("")
+  const [parentId, setParentId] = useState("")
+  const [parentNode, setParentNode] = useState("")
+  
   const { token, user } = useSelector(state => state.auth)
 
   const navigate = useNavigate()
@@ -29,21 +32,24 @@ const AddCondition = (props) => {
       nodeId: id,
     },
     onCompleted: (data) => {
-      const department = data.department;
-      setName(department.name.trim())
-      setValue(department.value)
+      const subCriterion = data.subCriterion;
+      setParentNode(subCriterion.criterionByParentId._nodeId)
+      setName(subCriterion.name.trim())
+      setValue(subCriterion.value)
+      setParentId(subCriterion.parentId)
     }
   })
 
   const [addSubCondition, { loading: addLoading }] = useMutation(ADD_SUB_CRITERIA, {
     onCompleted: (data) => {
-      navigate("/criteria/", { replace: true });
+      navigate(`/criteria/${id}`, { replace: true });
     }
   });
 
   const [updateSubCondition, { loading: updateLoading }] = useMutation(UPDATE_SUB_CRITERIA, {
     onCompleted: (data) => {
-      navigate("/criteria", { replace: true });
+      const { query } = data.updateSubCriterion;
+      navigate(`/criteria/${query.criterionById._nodeId}`, { replace: true });
     }
   });
 
@@ -64,6 +70,7 @@ const AddCondition = (props) => {
     }
     if (isUpdating) {
       variables.nodeId = id
+      variables.id = parentId
       updateSubCondition({ variables })
     } else {
       addSubCondition({ variables })
@@ -94,17 +101,17 @@ const AddCondition = (props) => {
               <label>value</label>
               <div className="mt-2">
                 <input
-                  id="crud-form-1"
-                  type="text"
+                  id="crud-form-2"
+                  type="number"
                   className="form-control w-full"
                   placeholder="Value"
-                  value={name}
+                  value={value}
                   onChange={(e) => setValue(e.target.value)}
                 />
               </div>
             </div>
             <div className="text-right mt-5">
-              <Link to={'/criteria/' + id} className="btn btn-outline-secondary w-24 mr-1">Cancel</Link>
+              <Link to={'/criteria/' + parentNode} className="btn btn-outline-secondary w-24 mr-1">Cancel</Link>
               <button
                 type="button"
                 className="btn btn-primary w-24"

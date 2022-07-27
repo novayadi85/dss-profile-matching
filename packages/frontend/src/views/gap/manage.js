@@ -11,9 +11,11 @@ import TextArea from "@components/input/TextArea";
 import { FileUploader } from "react-drag-drop-files";
 import { ADD_GAP, UPDATE_GAP, GET_GAP } from "@gql/gaps";
 import { GET_CRITERIA_AND_SUBS } from "@gql/sub_criteria";
+import { useTranslation } from "react-i18next";
 
 const ManageGap = (props) => {
 	const navigate = useNavigate()
+	const { t } = useTranslation();
   	const { id } = useParams()
 	const [recordId, setRecordId] = useState(false)
 	const [nodeId, setNodeId] = useState(false)
@@ -124,7 +126,7 @@ const ManageGap = (props) => {
 	return (
 		<>
 			<div className="intro-y flex items-center mt-8">
-				<h2 className="text-lg font-medium mr-auto">{isUpdating ? "Edit" : "Add"} Gap</h2>
+				<h2 className="text-lg font-medium mr-auto">{isUpdating ? t("Edit") : t("Add")} {t("Gap")}</h2>
 			</div>
 			<div className="intro-y box p-2 mt-5">
 				<form onSubmit={(e) => handleSubmit(e)}>
@@ -135,10 +137,10 @@ const ManageGap = (props) => {
 						</div>
 						<div className="col-span-6 lg:col-span-6 p-3" style={{display: 'none'}}>
 							<div className="mt-2">
-								<label htmlFor="crud-form-6" className="form-label">Criteria <span className="text-theme-6">*</span></label>
+								<label htmlFor="crud-form-6" className="form-label">{t("Criteria")} <span className="text-theme-6">*</span></label>
 								<Select
 									id="crud-form-6"
-									placeholder={'Choose One...'}
+									placeholder={t('Choose One..')}
 									options={criterion}
 									value={criterion.find(e => e.value == formData.subCriteriaId)}
 									onChange={(e) => handleSelectChange('subCriteriaId', e)}
@@ -151,7 +153,7 @@ const ManageGap = (props) => {
 							<div className="mt-2 w-2/4">
 								<TextInput
 									// required
-									label="Gap"
+									label={t("Gap")}
 									placeholder="Gap"
 									value={formData.gap}
 									onChange={(e) => handleChange('gap', e)}
@@ -163,7 +165,7 @@ const ManageGap = (props) => {
 							<div className="mt-2 w-2/4">
 								<TextInput
 									// required
-									label="Integrity"
+									label={t("Integrity")}
 									placeholder="Integrity"
 									value={formData.integrity}
 									onChange={(e) => handleChange('integrity', e)}
@@ -176,7 +178,7 @@ const ManageGap = (props) => {
 							<div className="mt-2 w-2/4">
 								<TextArea
 									// required
-									label="Note"
+									label={t("Note")}
 									placeholder="Note"
 									value={formData.note}
 									onChange={(e) => handleChange('note', e)}
@@ -186,8 +188,8 @@ const ManageGap = (props) => {
 						
 						<div className="col-span-12 lg:col-span-12 p-3">
 							<div className="text-right mt-5">
-								<button type="button" onClick={() => navigate('/gap')} className="btn btn-outline-secondary w-24 mr-1">Cancel</button>
-								<button type="submit" className="btn btn-primary w-24">Save</button>
+								<button type="button" onClick={() => navigate('/gap')} className="btn btn-outline-secondary w-24 mr-1">{t("Cancel")}</button>
+								<button type="submit" className="btn btn-primary w-24">{t("Save")}</button>
 							</div>
 						</div>
 					</div>

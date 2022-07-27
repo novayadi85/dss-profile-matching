@@ -20,6 +20,7 @@
   "scripts": {
     "service:start": "concurrently --kill-others --names \"RUN,GATEWAY\" --prefix \"({name})\" --prefix-colors \"yellow.bold,yellow.bold,cyan.bold,greenBright.bold\" \"wsrun -p '@srv/*' -c start\" \"yarn gateway start\"",
     "service:dev": "concurrently --kill-others --names \"RUN,GATEWAY\" --prefix \"({name})\" --prefix-colors \"yellow.bold,yellow.bold,cyan.bold,greenBright.bold\" \"wsrun -p '@srv/*' -c dev\" \"yarn gateway dev\"",
-    "start": "concurrently --kill-others --names \"RUN,GATEWAY\" --prefix \"({name})\" --prefix-colors \"yellow.bold,yellow.bold,cyan.bold,greenBright.bold\" \"wsrun -p '*' -c start\""
+    "start": "concurrently --kill-others --names \"RUN,GATEWAY\" --prefix \"({name})\" --prefix-colors \"yellow.bold,yellow.bold,cyan.bold,greenBright.bold\" \"wsrun -p '*' -c start\"",
+    "serve": "concurrently --kill-others --names \"RUN,GATEWAY\" --prefix \"({name})\" --prefix-colors \"yellow.bold,yellow.bold,cyan.bold,greenBright.bold\" \"wsrun -p '*' -c serve\""
   }
 }

@@ -110,11 +110,21 @@ export const calculate = (props) => {
             let NSF_data = [];
             let NCF_data = [];
             let points = {};
+            let NCF_OBJECT = {};
+            let NSF_OBJECT = {};
             if (allCriteria.length) {
                 allCriteria.forEach(criteria => {
 
                     if (!dataItem[`ncf_${criteria.parentId}`]) {
                         dataItem[`ncf_${criteria.parentId}`] = 0;
+                    }
+
+                    if (!NCF_OBJECT[criteria.parentId]) {
+                        NCF_OBJECT[criteria.parentId] = [];
+                    }
+
+                    if (!NSF_OBJECT[criteria.parentId]) {
+                        NSF_OBJECT[criteria.parentId] = [];
                     }
                       
                     if (!dataItem[`nsf_${criteria.parentId}`]) {
@@ -130,6 +140,7 @@ export const calculate = (props) => {
                         dataItem[`gap_${criteria.id}`]  = 0 - Number(criteria.idealValue)
                     }  
 
+                    const test = [];
                     
                     if (allGaps.length) {
                         allGaps.forEach(gap => {
@@ -137,9 +148,11 @@ export const calculate = (props) => {
                                 dataItem[`integrity_${criteria.id}`] = gap['integrity'];
                                 if (criteria.type === 'CORE') {
                                     NCF_data.push(dataItem[`integrity_${criteria.id}`])
+                                    NCF_OBJECT[criteria.parentId].push(gap['integrity'])
                                 }
                                 else if (criteria.type === 'SECONDARY') {
                                     NSF_data.push(dataItem[`integrity_${criteria.id}`])
+                                    NSF_OBJECT[criteria.parentId].push(gap['integrity'])
                                 }
                             }
                         })
@@ -147,12 +160,26 @@ export const calculate = (props) => {
 
                     //calculate NSF and NCF 
                     if (criteria.type === 'CORE') {
-                        dataItem[`ncf_${criteria.parentId}`] = (NCF_data.length) ? NCF_data.reduce((a, b) => a + b, 0) / NCF_data.length : 0;
-                        dataItem[`ncf_${criteria.parentId}`] = toFixedNumber(dataItem[`ncf_${criteria.parentId}`], 2);
+                        //dataItem[`ncf_${criteria.parentId}`] = (NCF_data.length) ? NCF_data.reduce((a, b) => a + b, 0) / NCF_data.length : 0;
+                        //dataItem[`ncf_${criteria.parentId}`] = toFixedNumber(dataItem[`ncf_${criteria.parentId}`], 2);
+
+                        let totNCF = (NCF_OBJECT[criteria.parentId].length) ? NCF_OBJECT[criteria.parentId].reduce((a, b) => a + b, 0) / NCF_OBJECT[criteria.parentId].length : 0;
+                        dataItem[`ncf_${criteria.parentId}`] = toFixedNumber(totNCF, 2);
                     }
                     else if (criteria.type === 'SECONDARY') {
-                        dataItem[`nsf_${criteria.parentId}`] = (NSF_data.length) ? NSF_data.reduce((a, b) => a + b, 0) / NSF_data.length : 0;
-                        dataItem[`nsf_${criteria.parentId}`] = toFixedNumber(dataItem[`nsf_${criteria.parentId}`], 2);
+                        //dataItem[`nsf_${criteria.parentId}`] = (NSF_data.length) ? NSF_data.reduce((a, b) => a + b, 0) / NSF_data.length : 0;
+                        //dataItem[`nsf_${criteria.parentId}`] = toFixedNumber(dataItem[`nsf_${criteria.parentId}`], 2);
+
+                        let totNSF  = (NSF_OBJECT[criteria.parentId].length) ? NSF_OBJECT[criteria.parentId].reduce((a, b) => a + b, 0) / NSF_OBJECT[criteria.parentId].length : 0;
+                        dataItem[`nsf_${criteria.parentId}`] = toFixedNumber(totNSF, 2);
+                    }
+
+                    if (`ncf_${criteria.parentId}` === 'ncf_5') {
+                        console.log([
+                            criteria.name,
+                            NCF_data,
+                            NCF_OBJECT[`ncf_${criteria.parentId}`]
+                        ])
                     }
 
                     //if (dataItem[`ncf_${criteria.parentId}`] > 0 && dataItem[`nsf_${criteria.parentId}`] > 0) {

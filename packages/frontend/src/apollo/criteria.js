@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
-export const QUERY_ALL_CRITERIA = gql`query allCriteria($first: Int!, $after: Cursor, $before: Cursor, $last: Int, $offset: Int, $condition: CriterionCondition, $orderBy: [CriteriaOrderBy!]) {
-    allCriteria(first: $first, after: $after, before: $before, last: $last, offset: $offset,condition: $condition, orderBy: $orderBy   ){
+export const QUERY_ALL_CRITERIA = gql`query allCriteria($first: Int!, $after: Cursor, $before: Cursor, $last: Int, $offset: Int, $condition: CriterionCondition, $filter: CriterionFilter, $orderBy: [CriteriaOrderBy!]) {
+    allCriteria(first: $first, after: $after, before: $before, last: $last, offset: $offset,condition: $condition, filter: $filter,  orderBy: $orderBy   ){
       nodes{
         _nodeId
         createdBy

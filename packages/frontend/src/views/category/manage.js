@@ -12,8 +12,10 @@ import { FileUploader } from "react-drag-drop-files";
 import { ADD_GAP, UPDATE_GAP, GET_GAP } from "@gql/gaps";
 import { GET_CRITERIA_AND_SUBS } from "@gql/sub_criteria";
 import { ADD_CATEGORY, GET_CATEGORY, UPDATE_CATEGORY } from "../../apollo/category";
+import { useTranslation } from "react-i18next";
 
 const ManageGap = (props) => {
+	const { t } = useTranslation();
 	const navigate = useNavigate()
   	const { id } = useParams()
 	const isUpdating = id ? id != "create" : false
@@ -81,7 +83,7 @@ const ManageGap = (props) => {
 	return (
 		<>
 			<div className="intro-y flex items-center mt-8">
-				<h2 className="text-lg font-medium mr-auto">{isUpdating ? "Edit" : "Add"} Category</h2>
+				<h2 className="text-lg font-medium mr-auto">{isUpdating ? t("Edit") : t("Add")} {t("Category")}</h2>
 			</div>
 			<div className="intro-y box p-2 mt-5">
 				<form onSubmit={(e) => handleSubmit(e)}>
@@ -96,7 +98,7 @@ const ManageGap = (props) => {
 							<div className="mt-2 w-2/4">
 								<TextInput
 									// required
-									label="Title"
+									label={t("Title")}
 									placeholder="Title"
 									value={formData.title}
 									onChange={(e) => handleChange('title', e)}
@@ -108,7 +110,7 @@ const ManageGap = (props) => {
 							<div className="mt-2 w-2/4">
 								<TextInput
 									// required
-									label="Percentage"
+									label={t("Percentage")}
 									placeholder="Percentage"
 									value={formData.percentage}
 									onChange={(e) => handleChange('percentage', e)}
@@ -118,8 +120,8 @@ const ManageGap = (props) => {
 
 						<div className="col-span-12 lg:col-span-12 p-3">
 							<div className="text-right mt-5">
-								<button type="button" onClick={() => navigate('/category')} className="btn btn-outline-secondary w-24 mr-1">Cancel</button>
-								<button type="submit" className="btn btn-primary w-24">Save</button>
+								<button type="button" onClick={() => navigate('/category')} className="btn btn-outline-secondary w-24 mr-1">{t("Cancel")}</button>
+								<button type="submit" className="btn btn-primary w-24">{t("Save")}</button>
 							</div>
 						</div>
 					</div>

@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import classNames from "classnames";
 import { positions } from '@helpers/position';
-export function TableItem({params, key: uniq}) {
+import { useTranslation } from 'react-i18next';
+import { toFixedNumber } from '@helpers/currency';
+export function TableItem({ params, key: uniq }, isPrinting) {
+    const { t } = useTranslation();
     const { normalise_data, items, allCategories, title, sub_category_headers, allCriteria, sub_criteria_kodes, sort_normalize, headers } = params;
     const [open, setOpen] = useState(false);
+    
     const Collapsible = (props) => {
         const { open, children } = props
         return (
@@ -24,14 +28,14 @@ export function TableItem({params, key: uniq}) {
                 <div className="col-12 col-lg-6">
                     <div className="flex flex-col sm:flex-row items-center p-5 border-b border-gray-200">
                         <h1 className="font-medium text-base mr-auto">
-                            Score for <span className='font-extrabold'>{positions.find(pos => pos.value === title).label} ({title})</span>
+                            {t('Score for')} <span className='font-extrabold'>{positions.find(pos => pos.value === title).label} ({title})</span>
                         </h1>
                         {(sort_normalize.length > 0) ? (
-                            <div className="w-full sm:w-auto flex items-center sm:ml-auto mt-3 sm:mt-0">
+                            <div className="w-full sm:w-auto flex items-center sm:ml-auto mt-3 sm:mt-0 hidePrinting">
                                 <button onClick={handleToggle}
                                     open={false}
                                     aria-controls="basic-collapsible" type="button" className="btn btn-outline-secondary w-full d-inline-block me-1 mb-2">
-                                    {(open) ? 'Close detail' : 'Open detail'} <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={`feather ${(open) ? 'feather-chevron-up': 'feather-chevron-down'}`}><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    {(open) ? t('Close detail') : t('Open detail')} <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={`feather ${(open) ? 'feather-chevron-up': 'feather-chevron-down'}`}><polyline points="6 9 12 15 18 9"></polyline></svg>
                                 </button>
                             </div>
                         ) : (null)}
@@ -39,13 +43,22 @@ export function TableItem({params, key: uniq}) {
                     </div>
                 </div>
 
+                
+                
+                <Collapsible
+                    key={uniq}
+                    open={open}
+                    transition={{ duration: "500ms", timingFunction: "ease-in-out" }}
+                    expandOnPrint
+                >
                 <div className="col-12 col-lg-6" style={{display: ''}}>
                     <div className="p-5">
                         <table className="table">
                             <thead>
                                 <tr className="bg-gray-200 dark:bg-dark-1">
-                                    <td className="border border-b-2 dark:border-dark-5 whitespace-nowrap">Kode</td>
-                                    <td className="border border-b-2 dark:border-dark-5 whitespace-nowrap">Criteria</td>
+                                    <td className="border border-b-2 dark:border-dark-5 whitespace-nowrap">{t('Code')}</td>
+                                    <td className="border border-b-2 dark:border-dark-5 whitespace-nowrap">{t('Criteria')}</td>
+                                    <td className="border border-b-2 dark:border-dark-5 whitespace-nowrap">{t('Type')}</td>
                                 </tr>
                             </thead>
                             <tbody>  
@@ -54,6 +67,7 @@ export function TableItem({params, key: uniq}) {
                                         <tr key={ value.id} className="bg-gray-200 dark:bg-dark-1">
                                             <td className="border border-b-2 dark:border-dark-5 whitespace-nowrap">{ value.kode.toUpperCase() }</td>
                                             <td className="border border-b-2 dark:border-dark-5 whitespace-nowrap">{ value.name }</td>
+                                            <td className="border border-b-2 dark:border-dark-5 whitespace-nowrap">{ value.type }</td>
                                         </tr>
                                     )
                                 })}
@@ -61,13 +75,7 @@ export function TableItem({params, key: uniq}) {
                         </table>
                     </div>
                 </div>
-                
-                <Collapsible
-                    key={uniq}
-                    open={open}
-                    transition={{ duration: "500ms", timingFunction: "ease-in-out" }}
-                    expandOnPrint
-                >
+                    
                 <div className="col-12 col-lg-6">
                     <div className="p-5">
                         <table className="table">
@@ -205,13 +213,13 @@ export function TableItem({params, key: uniq}) {
                                                 {
                                                     category.subCriteria.nodes.map(sub => {
                                                         return (
-                                                            <td  key={ sub.id} className="border border-b-2  whitespace-nowrap">{ item[`integrity_${sub.id}`] }</td>
+                                                            <td  key={ sub.id} className="border border-b-2  whitespace-nowrap">{ toFixedNumber(item[`integrity_${sub.id}`],2) }</td>
                                                         )
                                                     })
                                                 }
-                                                <td className="border border-b-2  whitespace-nowrap"><span className='font-extrabold'>{ item[`ncf_${category.id}`] }</span></td>
-                                                <td className="border border-b-2  whitespace-nowrap"><span className='font-extrabold'>{item[`nsf_${category.id}`]}</span></td>
-                                                <td className="border border-b-2  whitespace-nowrap"><span className='font-extrabold'>{ item[`nTotal_${category.id}`]}</span></td>
+                                                <td className="border border-b-2  whitespace-nowrap"><span className='font-extrabold'>{ toFixedNumber(item[`ncf_${category.id}`], 2) }</span></td>
+                                                <td className="border border-b-2  whitespace-nowrap"><span className='font-extrabold'>{toFixedNumber(item[`nsf_${category.id}`], 2)}</span></td>
+                                                <td className="border border-b-2  whitespace-nowrap"><span className='font-extrabold'>{ toFixedNumber(item[`nTotal_${category.id}`], 2)}</span></td>
                                             </tr>
                                         )
                                     })}
@@ -224,12 +232,12 @@ export function TableItem({params, key: uniq}) {
                 </Collapsible>
                 <div className="col-12 col-lg-6">
                     <div className="p-5">
-                        <h1 className='font-extrabold'>Table Rangking</h1>
+                        <h1 className='font-extrabold'>{t('Table Rangking')}</h1>
                         <table className="table">
                             <thead>
                                 <tr>
                                     <td className="border border-b-2  whitespace-nowrap"><span className='font-extrabold'>No.</span></td>
-                                    <td className="border border-b-2  whitespace-nowrap"><span className='font-extrabold'>Name</span></td>
+                                    <td className="border border-b-2  whitespace-nowrap"><span className='font-extrabold'>{t('Name')}</span></td>
                                     {allCategories.map((category, index) => {
                                         return (
                                             <td  key={ category.id} className="border border-b-2  whitespace-nowrap"><span className='font-extrabold'> { category.title} </span></td>
@@ -237,7 +245,7 @@ export function TableItem({params, key: uniq}) {
                                         
                                     })}
 
-                                    <td className="border border-b-2  whitespace-nowrap"><span className='font-extrabold'>Point</span></td>
+                                    <td className="border border-b-2  whitespace-nowrap"><span className='font-extrabold'>{t('Point')}</span></td>
                                 </tr>
                             </thead>
                             <tbody>
@@ -251,16 +259,16 @@ export function TableItem({params, key: uniq}) {
                                                 <td className="border border-b-2  whitespace-nowrap">{item.name}</td>
                                                 {allCategories.map((category) => {
                                                     return (
-                                                        <td  key={ category.id} className="border border-b-2  whitespace-nowrap"><span className='font-normal'>{ item[`nTotal_${category.id}`]}</span></td>
+                                                        <td  key={ category.id} className="border border-b-2  whitespace-nowrap"><span className='font-normal'>{ toFixedNumber(item[`nTotal_${category.id}`], 2)}</span></td>
                                                     )
                                                 })}
-                                                <td className="border border-b-2  whitespace-nowrap"><span className='font-normal'>{ item.total_point}</span></td>
+                                                <td className="border border-b-2  whitespace-nowrap"><span className='font-normal'>{ toFixedNumber(item.total_point,2)}</span></td>
                                             </tr>
                                         )
                                     })
                                 ): (
                                     <tr>
-                                        <td colSpan={ allCategories.length + 3}  className="border border-b-2  whitespace-nowrap">No Data</td>
+                                        <td colSpan={ allCategories.length + 3}  className="border border-b-2  whitespace-nowrap">{t('No Data')}</td>
                                     </tr>
                                 )}
                             </tbody> 

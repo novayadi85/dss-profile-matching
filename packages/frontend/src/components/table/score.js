@@ -68,6 +68,7 @@ export function TableItem(props) {
                 })
             }
 
+            // console.log('sub_category_headers', sub_category_headers)
             allCriteria = [
                 ...allCriteria,
                 ...childs

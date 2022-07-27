@@ -5,7 +5,6 @@
   "license": "MIT",
   "scripts": {
     "start": "node ./app.js",
-    "db": "node runsql.js",
     "provision": "psql -h localhost -U postgres -f db/init.sql"
   },
   "devDependencies": {

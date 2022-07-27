@@ -1,7 +1,10 @@
-const Formation = ({lineUps}) => {
+import { useTranslation } from "react-i18next";
+
+const Formation = ({ lineUps }) => {
+    const { t } = useTranslation();
     return (
         <div id="preview" className='mt-5'>
-            <h2>{'Formation 4-2-3-1'}</h2>
+            <h2>{ t('Formation')} {'4-2-3-1'}</h2>
             {(Object.values(lineUps).length > 0) ? (
             <div id="preview-lineups">
                 <div className="pitch-container">

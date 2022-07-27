@@ -85,11 +85,32 @@ BEGIN
 END; 
 $$ language plpgsql strict security definer;
 
+CREATE FUNCTION dss_public.modify_user( 
+  first_name  text, 
+  last_name   text, 
+  email       text, 
+  password    text 
+) RETURNS dss_public.user AS $$ 
+DECLARE 
+  new_user dss_public.user; 
+BEGIN 
+  UPDATE dss_public.user 
+    set first_name = first_name, last_name = last_name
+    returning * INTO new_user; 
+
+  UPDATE dss_private.user_account 
+    set email = email, password_hash = crypt(password, gen_salt('bf'))
+
+  return new_user; 
+END; 
+$$ language plpgsql strict security definer;
+
 CREATE FUNCTION dss_public.current_user() RETURNS dss_public.user AS $$ 
   SELECT * 
   FROM dss_public.user 
   WHERE id = dss_public.current_user_id()
 $$ language sql stable;
+
 
 CREATE TYPE "types" AS ENUM (
   'CORE',
@@ -259,3 +280,43 @@ ALTER TABLE dss_public.score
 
 ALTER TABLE dss_public.score
     ADD COLUMN value json;
+
+
+
+CREATE FUNCTION dss_public.modify_user( 
+  firstname  text, 
+  lastname   text, 
+  username   text, 
+  password   text,
+  userid      int
+) RETURNS dss_public.user AS $$ 
+DECLARE 
+  new_user dss_public.user; 
+BEGIN 
+  UPDATE dss_public.user 
+    set first_name = firstname, last_name = lastname where id = userid
+    returning * INTO new_user; 
+        
+  UPDATE dss_private.user_account 
+    set email = username, password_hash = crypt(password, gen_salt('bf')) where user_id = new_user.id;
+
+  return new_user; 
+  
+END; 
+$$ language plpgsql strict security definer;
+
+
+CREATE FUNCTION dss_public.user_account_by_id(id int) RETURNS dss_private.user_account AS $$ 
+  DECLARE 
+  new_user dss_private.user_account; 
+	BEGIN 
+  	SELECT * 
+  	FROM dss_private.user_account 
+  	WHERE user_id = id INTO new_user;
+	return new_user;
+  	END;
+$$ language plpgsql strict security definer;
+
+GRANT EXECUTE ON FUNCTION dss_public.user_account_by_id(int) TO  dss_authenticated; 
+GRANT EXECUTE ON FUNCTION dss_public.modify_user(text, text, text, text, int) TO  dss_authenticated; 
+GRANT USAGE ON SCHEMA dss_private TO dss_authenticated;

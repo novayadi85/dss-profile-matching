@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'; 
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux'
 import { ApolloProvider } from '@apollo/client'
@@ -9,7 +9,7 @@ import client from "@gql"
 import App from './App';
 import ErrorBoundary from '@components/errorboundary';
 import reportWebVitals from './reportWebVitals';
-
+import './i18n';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import './assets/css/app.css';
 import "toastify-js/src/toastify.css"

@@ -7,10 +7,11 @@ export const QUERY_ALL_PLAYER = gql`
     $before: Cursor
     $last: Int
     $offset: Int
+    $filter: PlayerFilter
     $condition: PlayerCondition 
     $orderBy: [PlayersOrderBy!]
   ) {
-    allPlayers(first: $first, after: $after, before: $before, last: $last, offset: $offset, condition: $condition, orderBy: $orderBy ) {
+    allPlayers(first: $first, after: $after, before: $before, last: $last, offset: $offset, condition: $condition, filter: $filter, orderBy: $orderBy ) {
       totalCount
       pageInfo {
         endCursor

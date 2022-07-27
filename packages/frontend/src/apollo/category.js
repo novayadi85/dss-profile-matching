@@ -8,9 +8,10 @@ export const QUERY_ALL_CATEGORY = gql`
     $last: Int
     $offset: Int
     $condition: CategoryCondition 
+    $filter: CategoryFilter
     $orderBy: [CategoriesOrderBy!]
   ) {
-    allCategories(first: $first, after: $after, before: $before, last: $last, offset: $offset, condition: $condition, orderBy: $orderBy ) {
+    allCategories(first: $first, after: $after, before: $before, last: $last, offset: $offset, condition: $condition, filter: $filter, orderBy: $orderBy ) {
       totalCount
       pageInfo {
         endCursor

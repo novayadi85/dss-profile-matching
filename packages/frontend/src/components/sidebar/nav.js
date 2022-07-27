@@ -1,7 +1,7 @@
 import React from 'react';
 import { Home, Users, Dribbble, LifeBuoy, Terminal, Target, UserCheck, Thermometer } from 'react-feather'
 import { Link, useLocation } from 'react-router-dom';
-
+import { useTranslation } from 'react-i18next';
 import logo from '@assets/images/logo.png';
 import { site } from '@config';
 
@@ -60,6 +60,7 @@ export const jMenu = {
 };
 
 export const MappingMenu = ({ location }) => {
+    const { t, i18n } = useTranslation();
     return jMenu.data.map(
         (d, index) => {
             let className = 'side-menu';
@@ -69,7 +70,7 @@ export const MappingMenu = ({ location }) => {
                 <li key={index}>
                     <Link className={className} to={d.path}>
                         <div className="side-menu__icon"> {d.design}</div>
-                        <div className="side-menu__title"> {d.name} </div>
+                        <div className="side-menu__title"> {t(d.name)} </div>
                     </Link>
                 </li>
             )
@@ -80,6 +81,7 @@ export const MappingMenu = ({ location }) => {
 
 const SideMenu = () => {
     const location = useLocation();
+    
 
     return (
         <nav className="side-nav">

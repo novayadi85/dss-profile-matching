@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PrivateLayout from '@components/layout/privateLayout';
-import { ChevronDown, Circle, XCircle } from 'react-feather'
-import cash from "cash-dom";
+import { Printer, Circle, XCircle } from 'react-feather'
 import Select from 'react-select';
 import { positions, types as typePositions } from '@helpers/position';
 import { GET_ALL_PLAYER_BY_POSITION_AND_GET_SCORES } from "@gql/player";
@@ -13,8 +12,10 @@ import { getWeek } from '@helpers/date';
 import Toastify from "toastify-js";
 import { TableItem } from '@components/table/calculation';
 import { calculate } from '@helpers/calculation';
+import { useTranslation } from 'react-i18next';
 
 const Calculate = () => {
+    const { t } = useTranslation();
     const [filter, setFilter] = useState({});
     const [errors, setError] = useState(false);
     const [progress, setProgress] = useState(false);
@@ -24,6 +25,7 @@ const Calculate = () => {
     const [allCategories, setAllCategories] = useState([]);
     const [allGaps, setAllGaps] = useState([]);
     const [normalize, setNormalize] = useState([]);
+    const [isPrinting, setIsPrinting] = useState(false);
 
     const [addRating, { loading: addRatingLoading }] = useMutation(ADD_RATING, {
 		onCompleted: (data) => {
@@ -94,7 +96,7 @@ const Calculate = () => {
         if (!filter?.position) {
             setError(true);
             Toastify({
-                text: "Please choose position!",
+                text: t("Please choose position!"),
                 duration: -1,
                 newWindow: true,
                 close: false,
@@ -197,28 +199,33 @@ const Calculate = () => {
     const MarkupResult = () => {
         return normalize.map((items, index) => {
             return (
-                <TableItem key={`normalize-${index}`} params={items} />
+                <TableItem key={`normalize-${index}`} params={items} isPrinting/>
             )
         })
         
     }
+
+    const printItems = () => {
+        setIsPrinting(true);
+        window.print();
+    };
     
     return (
         <PrivateLayout>
-			<div className="intro-y box p-2 mt-5">
+			<div className="hidePrinting intro-y box p-2 mt-5">
 				<form onSubmit={(e) => handleSubmit(e)}>
 					<div className="grid grid-cols-12">
 
 						<div className="col-span-3 lg:col-span-3 p-3">
 							<div className="mt-0">
-								<label htmlFor="crud-form-6" className="form-label">Choose Position To Proccess <span className="text-theme-6">*</span></label>
+								<label htmlFor="crud-form-6" className="form-label">{t('Choose Position To Proccess')} <span className="text-theme-6">*</span></label>
 								<Select
 									id="crud-form-6"
-                                    placeholder={'Choose One...'}
+                                    placeholder={t('Choose One..')}
                                     className={(error || errors) ? 'border-theme-6' : '' }
                                     options={[
                                         {
-                                            label: "All Positions",
+                                            label: t("All Positions"),
                                             value: "all"
                                         },
                                         ...positions
@@ -227,7 +234,7 @@ const Calculate = () => {
 									value={positions.find(e => e.value == filter.position)}
 									onChange={(e) => handleSelectChange('position', e)}
                                 />
-                                <div className="pristine-error text-theme-6 mt-2" style={{ display: (errors) ?  'block' : 'none' }}>This field is required</div>
+                                <div className="pristine-error text-theme-6 mt-2" style={{ display: (errors) ?  'block' : 'none' }}>{t('This field is required')}</div>
                             </div>
                            
 						</div>
@@ -237,10 +244,10 @@ const Calculate = () => {
                                 <button type="submit" className="btn btn-primary">
                                     {(progress) ? (
                                         <>
-                                        <span className="mr-2">Please wait...  </span>
+                                        <span className="mr-2">{t('Please wait...')} </span>
                                             <Circle className='w-6 h-6 mr-2 spinner' />
                                         </>
-                                    ) : 'Process'}
+                                    ) : t('Process')}
                                     
                                 </button>
 							</div>
@@ -251,9 +258,14 @@ const Calculate = () => {
             </div>
             
             
-            {(result) ? (<div className='intro-y'><MarkupResult/></div>) : (<></>)}
+            {(result) ? (<div className='intro-y'>
+                <MarkupResult/>                        
+                <div className="flex mt-5" style={{display: 'block', textAlign: 'right'}}>
+                    <button onClick={printItems} id="tabulator-print" className="btn btn-outline-secondary hidePrinting w-1/2 sm:w-auto mr-2"> <Printer className="w-4 h-4 mr-2"/> Print </button>
+                </div> 
+            </div>) : (<></>)}
             {(empty) ? (<div className='intro-y mt-3'>
-                <div className="alert alert-warning show flex items-center mb-2" role="alert"> <XCircle className='w-6 h-6 mr-2'/> There's no data found... </div>                  
+                <div className="alert alert-warning show flex items-center mb-2" role="alert"> <XCircle className='w-6 h-6 mr-2' /> {t('There\'s no data found...')} </div>                  
             </div>) : (<></>)}
 
         </PrivateLayout>)

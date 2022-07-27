@@ -1,5 +1,5 @@
 import cash from "cash-dom";
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, Fragment, useTransition } from "react";
 import { useNavigate, useParams, Link } from 'react-router-dom'
 import { useMutation, useQuery } from "@apollo/client";
 import InlineEditor from "@ckeditor/ckeditor5-build-inline";
@@ -10,9 +10,11 @@ import { QUERY_ALL_CATEGORY } from "@gql/category";
 import { GET_CRITERIA, QUERY_ALL_SUB_CRITERIA } from "@gql/criteria";
 import Table from '@components/Table';
 import { positions } from '@helpers/position';
+import { useTranslation } from "react-i18next";
 
 const ManageUser = (props) => {
 	const navigate = useNavigate()
+	const { t } = useTranslation();
   	const { id } = useParams()
 	const isUpdating = id ? id != "create" : false
 	const [recordId, setRecordId] = useState(false)
@@ -171,22 +173,22 @@ const ManageUser = (props) => {
 	return (
 		<>
 			<div className="intro-y flex items-center mt-8">
-				<h2 className="text-lg font-medium mr-auto">Add Criteria</h2>
+				<h2 className="text-lg font-medium mr-auto">{ t('Add Criteria')}</h2>
 			</div>
 			<div className="intro-y box p-2 mt-5">
 				<form onSubmit={(e) => handleSubmit(e)}>
 					<div className="grid grid-cols-12">
 						
 						<div className="col-span-12 lg:col-span-12 px-3 pt-3 pb-0">
-							<h4 className="font-bold mb-0">CRITERIA</h4>
+							<h4 className="font-bold mb-0">{ t('Criteria')}</h4>
 						</div>
 
 						<div className="col-span-12 lg:col-span-12 p-3">
 							<div className="mt-2 w-2/4">
-								<label htmlFor="crud-form-6" className="form-label">Category<span className="text-theme-6">*</span></label>
+								<label htmlFor="crud-form-6" className="form-label">{ t('Category')}<span className="text-theme-6">*</span></label>
 								<Select
 									id="crud-form-6"
-									placeholder={'Choose a category...'}
+									placeholder={ t('Choose one..')}
 									options={categories}
 									value={categories.find(e => e.value == formData.parentId)}
 									onChange={(e) => handleSelectChange('parentId', e)}
@@ -197,7 +199,7 @@ const ManageUser = (props) => {
 						<div className="col-span-6 lg:col-span-8 p-3">
 							<TextInput
 								// required
-								label="Name"
+								label={ t('Name')}
 								placeholder="Name"
 								value={formData.name}
 								onChange={(e) => handleChange('name', e)}
@@ -207,10 +209,10 @@ const ManageUser = (props) => {
 			
 						<div className="col-span-12 lg:col-span-12 p-3">
 							<div className="mt-2 w-2/4">
-								<label htmlFor="crud-form-6" className="form-label">Type <span className="text-theme-6">*</span></label>
+								<label htmlFor="crud-form-6" className="form-label">{ t('Type')} <span className="text-theme-6">*</span></label>
 								<Select
 									id="crud-form-6"
-									placeholder={'Choose One...'}
+									placeholder={ t('Choose one..')}
 									options={typeOptions}
 									value={typeOptions.find(e => e.value == formData.type)}
 									onChange={(e) => handleSelectChange('type', e)}
@@ -220,10 +222,10 @@ const ManageUser = (props) => {
 
 						<div className="col-span-12 lg:col-span-12 p-3">
 							<div className="mt-2 w-2/4">
-								<label htmlFor="crud-form-6" className="form-label">Position<span className="text-theme-6">*</span></label>
+								<label htmlFor="crud-form-6" className="form-label">{ t('Position')}<span className="text-theme-6">*</span></label>
 								<Select
 									id="crud-form-6"
-									placeholder={'Choose a position...'}
+									placeholder={ t('Choose one..')}
 									options={positions}
 									isMulti={true}
 									value={positions.filter(e => formData.position != null && formData.position.includes(e.value))}
@@ -237,7 +239,7 @@ const ManageUser = (props) => {
 								
 								<TextInput
 								// required
-							       label="Value Std"
+							       label={ t('Ideal Value')}
 								    placeholder="Value Std"
 								    value={formData.idealValue}
 								    onChange={(e) => handleChange('idealValue', e)}
@@ -249,8 +251,8 @@ const ManageUser = (props) => {
 						
 						<div className="col-span-12 lg:col-span-12 p-3">
 							<div className="text-right mt-5">
-								<button type="button" onClick={() => navigate('/criteria')} className="btn btn-outline-secondary w-24 mr-1">Cancel</button>
-								<button type="submit" className="btn btn-primary w-24">Save</button>
+								<button type="button" onClick={() => navigate('/criteria')} className="btn btn-outline-secondary w-24 mr-1">{ t('Cancel')}</button>
+								<button type="submit" className="btn btn-primary w-24">{ t('Save')}</button>
 							</div>
 						</div>
 					</div>
@@ -260,10 +262,10 @@ const ManageUser = (props) => {
 				<>
 					<div className="intro-y flex flex-col sm:flex-row items-center mt-8">
 						<h2 className="text-lg font-medium mr-auto">
-							{' Sub Criteria Options'}
+							{t('Sub Criteria Options')}
 						</h2>
 						<div className="w-full sm:w-auto flex mt-4 sm:mt-0">
-						<Link to={'/sub-criteria/add/'+nodeId} className="btn btn-dark mb-2">Add New Option</Link>
+							<Link to={'/sub-criteria/add/' + nodeId} className="btn btn-dark mb-2">{t('Add New Option')}</Link>
 						</div>
 					</div>
 

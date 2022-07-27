@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom"
 import Table from "@components/Table"
 import { QUERY_ALL_GAPS, DELETE_GAP} from "@gql/gaps"
 import { useMutation } from "@apollo/client"
+import { useTranslation } from "react-i18next"
 
 let number = 1;
 const autoNumber = () => {
@@ -20,7 +21,7 @@ const columns = [
 const searchFieldName = ["name"]
 
 const ListGap = (prop) => {
-
+	const { t } = useTranslation();
   const [open, setOpen] = useState(false)
   const [selectedId, setSelectedId] = useState('')
   const navigate = useNavigate()
@@ -68,10 +69,10 @@ const ListGap = (prop) => {
         />
       <div className="intro-y flex flex-col sm:flex-row items-center mt-8">
         <h2 className="text-lg font-medium mr-auto">
-          GAP data
+          {t('GAP data')}
         </h2>
         <div className="w-full sm:w-auto flex mt-4 sm:mt-0">
-          <Link to={'/gap/create'} className="btn btn-primary shadow-md mr-2">Add New</Link>
+          <Link to={'/gap/create'} className="btn btn-primary shadow-md mr-2">{t('Add New')}</Link>
         </div>
       </div>
       

@@ -4,21 +4,17 @@ import { useNavigate, Link } from "react-router-dom"
 import Table from "@components/Table"
 import { useMutation } from '@apollo/client';
 import { QUERY_ALL_CATEGORY, DELETE_CATEGORY } from "../../apollo/category"
-
-let number = 1;
-const autoNumber = () => {
-  return number++;
-}
+import { useTranslation } from 'react-i18next'
 
 const columns = [
-  { title: "ID", field: "ID", width: 100 , mutator:autoNumber},
+  { title: "ID", field: "ID", width: 100 },
   { title: "Title", field: "title" },
   { title: "Percentage", field: "percentage" }
 ]
 const searchFieldName = ["title"]
 
 const ListCategory = (prop) => {
-
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false)
   const [selectedId, setSelectedId] = useState('')
   const navigate = useNavigate()
@@ -66,10 +62,10 @@ const ListCategory = (prop) => {
         
       <div className="intro-y flex flex-col sm:flex-row items-center mt-8">
         <h2 className="text-lg font-medium mr-auto">
-          Criteria data
+          {t('Criteria data')}
         </h2>
         <div className="w-full sm:w-auto flex mt-4 sm:mt-0">
-          <Link to={'/category/create'} className="btn btn-primary shadow-md mr-2">Add New</Link>
+          <Link to={'/category/create'} className="btn btn-primary shadow-md mr-2">{t('Add New')}</Link>
         </div>
       </div>
       

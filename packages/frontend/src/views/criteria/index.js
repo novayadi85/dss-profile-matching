@@ -7,6 +7,7 @@ import ManageCriteria from './manage';
 import { useState } from 'react';
 import { ModalDelete } from '../../components/overlay/modal';
 import { useMutation } from '@apollo/client';
+import { useTranslation } from 'react-i18next';
 
 let number = 1;
 const autoNumber = () => {
@@ -24,7 +25,7 @@ const columns = [
 const searchFieldName = ["name"]
 
 const DefaultPage = () => {
-
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false)
   const [selectedId, setSelectedId] = useState("")
   const navigate = useNavigate()
@@ -69,10 +70,10 @@ const DefaultPage = () => {
 
     <div className="intro-y flex flex-col sm:flex-row items-center mt-8">
       <h2 className="text-lg font-medium mr-auto">
-        {'Sub Criteria data'}
+        {t('Sub Criteria data')}
       </h2>
       <div className="w-full sm:w-auto flex mt-4 sm:mt-0">
-        <Link to={'/criteria/create'} className="btn btn-primary shadow-md mr-2">Add New</Link>
+        <Link to={'/criteria/create'} className="btn btn-primary shadow-md mr-2">{ t('Add New')}</Link>
       </div>
     </div>
 

@@ -6,13 +6,17 @@ import { ALL_RATINGS } from '@gql/rating';
 import { useQuery } from '@apollo/client';
 import { positions } from '@helpers/position';
 import Tabulator from "tabulator-tables";
-import Select from 'react-select'
+import Select from 'react-select';
+import { Printer } from 'react-feather'
+import { useTranslation } from 'react-i18next';
 const formatImage_ = (cell) => `<div class="w-6 h-100 max-h-full"><img class="image-relative" src="${(cell.getValue()) ? cell.getValue() :  '/logo512.png'}"></div>`
 
 const Dashboard = () => {
+    const { t } = useTranslation();
     const [ratings, setRatings] = useState([]);
     const [lineUps, setLineUps] = useState([]);
     const [formation, setFormation] = useState('442');
+    const [tbl, setTbl] = useState();
     // Similar to componentDidMount and componentDidUpdate:
     useEffect(() => {
         setup();
@@ -104,6 +108,12 @@ const Dashboard = () => {
         }
         */
         
+        let number = 1;
+        const autoNumber = () => {
+            return number++;
+        }
+            
+        
         const table = new Tabulator("#rating-table", {
             data: Object.values(tableData), //set initial table data
             layout: "fitColumns",
@@ -112,17 +122,22 @@ const Dashboard = () => {
             printAsHtml: true,
             printStyled: true,
             columns:[
-                {title:"#", field:"no", width: 100},
-                {title:"Number", field:"number", width: 100},
-                {title:"Name", field:"name", width: 400},
-                {title:"Pic.", field:"pic", formatter: formatImage_},
-                {title:"Position", field:"position"},
-                {title:"Score", field:"point", formatter: (cell) => `<button class="btn btn-rounded btn-dark me-1 ">${cell.getValue()}</button>`},
+                {title:"#", field:"no", width: 100, mutator : autoNumber, headerSort: false},
+                {title: t("Number"), field:"number", width: 100},
+                {title:t("Name"), field:"name", width: 400},
+                {title:t("Pic."), field:"pic", formatter: formatImage_, headerSort: false},
+                {title:t("Position"), field:"position"},
+                {title:t("Score"), field:"point", formatter: (cell) => `<button class="btn btn-rounded btn-dark me-1 ">${cell.getValue()}</button>`},
             ],
         }) 
 
        
         setLineUps(Object.values(tableData));
+        setTbl(table)
+    }
+
+    const printMe = () => {
+        tbl.print();
     }
 
     const { loading, error, data: ratings_data } = useQuery(ALL_RATINGS, {
@@ -147,7 +162,7 @@ const Dashboard = () => {
                             <div className="col-span-12 md:col-span-12 xl:col-span-12 2xl:col-span-12 mt-3">
                                 <div className="intro-x flex items-center h-10">
                                     <h1 className="text-lg font-bold mr-5">
-                                        Rating player of the week
+                                        {t('Rating player of the week')}
                                     </h1>
                                     <div className="form-check form-switch w-sm-auto ms-sm-auto mt-3 mt-sm-0 ps-0">
                                         <button className='btn btn-success w-24 me-1 mb-2'><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={"1.5"} strokeLinecap="round" strokeLinejoin="round" className="feather feather-refresh-cw d-block mx-auto"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg></button>
@@ -165,16 +180,16 @@ const Dashboard = () => {
         {(loading) ? (<p>Loading...</p>): (
             <div className="grid grid-cols-12 gap-6">
                 <div className="col-span-12 2xl:col-span-8">
-                    <div style={{ position: 'relative', maxWidth: '1024px'}}>
+                    <div style={{ position: 'relative', maxWidth: '1024px', display: "none"}}>
                     <div className="mt-4" style={{
                         position: 'absolute',
-                        zIndex: '99999',
+                        zIndex: '5',
                         right: '20px',
                         top: '2.5em',
                     }}>
                         <Select
                             id="crud-form-6"
-                            placeholder={'Choose formation...'}
+                            placeholder={t('Choose formation..')}
                             options={[
                                 {
                                     label: "4-4-2",
@@ -199,18 +214,21 @@ const Dashboard = () => {
                     {(lineUps.length) ? ( <Preview players={lineUps} formations={ formation } />) : (null)}
                    
                 </div>
-            <div className="col-span-8 lg:col-span-8 px-0 pt-0 pb-0">
+            <div className="col-span-12 lg:col-span-12 px-0 pt-0 pb-0">
                 <div className="intro-y mt-0">
                     <div className="d-flex flex-column flex-sm-row align-items-center p-5 px-0 border-bottom border-gray-200 dark-border-dark-5">
                         <h4 className="text-md font-medium mr-auto">
-                            {'Last Line Up This Week'}
+                            {t('Last Line Up This Week')}
                         </h4>
                     </div>
                     <div className="intro-y box p-5 mt-0">
-                        <div className="preview">
-                            <div className="overflow-x-auto">
-                            <div id="rating-table"></div>
-                            </div>
+                            <div className="preview">
+                                <div className="flex mt-5 mb-3 sm:mt-0" style={{display: 'block', textAlign: 'right'}}>
+                                    <button onClick={printMe} id="tabulator-print" className="btn btn-outline-secondary w-1/2 sm:w-auto mr-2"> <Printer className="w-4 h-4 mr-2"/> Print </button>
+                                </div> 
+                                <div className="overflow-x-auto">
+                                    <div id="rating-table"></div>
+                                </div>
                         </div>
                     </div>
                 </div>

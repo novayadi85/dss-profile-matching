@@ -4,13 +4,16 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery } from "@apollo/client";
 import InlineEditor from "@ckeditor/ckeditor5-build-inline";
 import TextInput from "@components/input/TextInput";
-import { REGISTER_DATA, GET_USER } from "@gql/users";
+import { UPDATE_USER, GET_USER, GET_ACCOUNT, MODIFY_ACCOUNT } from "@gql/users";
+import { useTranslation } from "react-i18next";
 
 
 const ManageUser = (props) => {
 	const navigate = useNavigate();
+	const { t } = useTranslation();
 	const { id } = useParams()
 	const [recordId, setRecordId] = useState(false)
+	const [errorMessage, setErrorMessage] = useState(false)
 	const [nodeId, setNodeId] = useState(false)
 	const isUpdating = id ? id != "create" : false
 
@@ -22,6 +25,31 @@ const ManageUser = (props) => {
 		email: '',
 	})
 
+	const [getAccount] = useMutation(GET_ACCOUNT, {
+		variables: {
+		  nodeId: id,
+		},
+		onCompleted: (data) => {
+		  const userAccount = data?.userAccountById?.userAccount;
+			setFormData((prev) => ({
+				...prev,
+				email: userAccount.email
+			}));
+		}
+	})	
+
+	const [updateAccount, {error: errorSave}] = useMutation(MODIFY_ACCOUNT, {
+		variables: {
+		  userid: recordId,
+		  firstname: formData.firstName,
+		  lastname: formData.lastName,
+		  password: formData.password,
+		  username: formData.email
+		},
+		onCompleted: (data) => {
+			navigate("/users", { replace: true });
+		}
+	})	
 
 	const { loading, error, data } = useQuery(GET_USER, {
 		skip: !isUpdating,
@@ -36,11 +64,18 @@ const ManageUser = (props) => {
 			email: user.email,
 		  }
 
-		  setRecordId(user.id);
-		  setNodeId(user._nodeId);
-		  setFormData(formDatas)
+		   setRecordId(user.id);
+		   setNodeId(user._nodeId);
+			setFormData(formDatas)
+			getAccount({
+				variables: {
+					id: user.id
+				}
+			});
 		}
 	})
+	
+		
 
 	useEffect(() => {
 		cash(".editor").each(function () {
@@ -95,45 +130,62 @@ const ManageUser = (props) => {
 		}));
 	};
 
+	const [updateUser, { loading: updateLoading }] = useMutation(UPDATE_USER, {
+		onCompleted: (data) => {
+		   // navigate("/users", { replace: true });
+			
+		}
+	});
+
 	// handle form
 	const handleSubmit = (e) => {
 		e.preventDefault()
-		console.log(formData)
+		let variables = formData
+		variables._nodeId = nodeId;
+	 	// updateUser({ variables })  
+		if (variables.password === '' || variables.password != variables.confirmPassword) {
+			setErrorMessage(true);
+		}
+		else {
+			setErrorMessage(false);
+			updateAccount()
+		}
+		
 	}
 
 	return (
 		<>
 			<div className="intro-y flex items-center mt-8">
-				<h2 className="text-lg font-medium mr-auto">Add User</h2>
+				<h2 className="text-lg font-medium mr-auto">{ t('Add User')}</h2>
 			</div>
 			<div className="intro-y box p-2 mt-5">
 				<form onSubmit={(e) => handleSubmit(e)}>
 					<div className="grid grid-cols-12">
 						
 						<div className="col-span-12 lg:col-span-12 px-3 pt-3 pb-0">
-							<h4 className="font-bold mb-0">USER ACCOUNT</h4>
+							<h4 className="font-bold mb-0">{ t('Detail User')}</h4>
 						</div>
 						<div className="col-span-12 lg:col-span-12 p-3">
 							<TextInput
 								// required
-								label="First Name"
+								label={ t('First Name')}
 								placeholder="First Name"
 								value={formData.firstName}
 								onChange={(e) => handleChange('firstName', e)}
 							/>
 							<TextInput
 								// required
-								label="Last Name"
+								label={ t('Last Name')}
 								placeholder="Last Name"
 								value={formData.lastName}
 								onChange={(e) => handleChange('lastName', e)}
 							/>
 							<TextInput
 								// required
-								label="Email"
-								placeholder="example@email.com"
-								value={formData.email}
-								onChange={(e) => handleChange('email', e)}
+								label="Username"
+								value={formData.email ? formData.email : ""}
+								// onChange={(e) => handleChange('email', e)}
+								disabled={true}
 							/>
 							<TextInput
 								// required
@@ -155,11 +207,12 @@ const ManageUser = (props) => {
 						
 						<div className="col-span-12 lg:col-span-12 p-3">
 							<div className="text-right mt-5">
-								<button onClick={() => navigate('/users')} type="button" className="btn btn-outline-secondary w-24 mr-1">Cancel</button>
-								<button type="submit" className="btn btn-primary w-24">Save</button>
+								<button onClick={() => navigate('/users')} type="button" className="btn btn-outline-secondary w-24 mr-1">{ t('Cancel')}</button>
+								<button type="submit" className="btn btn-primary w-24">{ t('Save')}</button>
 							</div>
 						</div>
 					</div>
+					{(errorSave || errorMessage) && <p>Error : {t('Please try again')}</p>}
 				</form>
 			</div>
 		</>

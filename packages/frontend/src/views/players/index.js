@@ -7,6 +7,7 @@ import ManageUser from './manage';
 import { QUERY_ALL_PLAYER, DELETE_PLAYER } from '@gql/player';
 import { ModalDelete } from "@components/overlay/modal"
 import { useMutation } from '@apollo/client';
+import { useTranslation } from 'react-i18next';
 
 
 const usingByFormater = (cell) => `<button class="btn btn-rounded btn-dark me-1 ">${cell.getValue()}</button>`
@@ -18,13 +19,13 @@ const columns = [
   { title: "Position", field: "position" },
   { title: "Phone", field: "phone" },
 ]
-const searchFieldName = ["email"]
+const searchFieldName = ["name", "backNumber"]
 
 const DefaultPage = () => {
   let navigate = useNavigate();
   const [open, setOpen] = useState(false)
   const [selectedId, setSelectedId] = useState('')
-
+  const { t } = useTranslation();
   const [deleteData, { data, loading, error }] = useMutation(DELETE_PLAYER, {
     onCompleted: (data) => {
       setOpen(false)
@@ -67,10 +68,10 @@ const DefaultPage = () => {
         />
       <div className="intro-y flex flex-col sm:flex-row items-center mt-8">
         <h2 className="text-lg font-medium mr-auto">
-          {'Player data'} 
+          {t('Player data')} 
         </h2>
         <div className="w-full sm:w-auto flex mt-4 sm:mt-0">
-          <Link to={'/players/create'} className="btn btn-primary shadow-md mr-2">Add New</Link>
+          <Link to={'/players/create'} className="btn btn-primary shadow-md mr-2">{t('Add New')}</Link>
         </div>
       </div>
       {/* <DeleteUser /> */}

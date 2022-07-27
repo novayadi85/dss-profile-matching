@@ -31,6 +31,8 @@
     "feather-icons": "^4.28.0",
     "graphql": "^16.2.0",
     "highlight.js": "^10.6.0",
+    "i18next": "^21.8.14",
+    "i18next-http-backend": "^1.4.1",
     "js-beautify": "^1.11.0",
     "litepicker": "^2.0.11",
     "pristinejs": "^0.1.9",
@@ -41,6 +43,7 @@
     "react-drag-drop-files": "^2.2.4",
     "react-feather": "^2.0.9",
     "react-helmet": "^6.1.0",
+    "react-i18next": "^11.18.1",
     "react-loader-spinner": "^5.0.6",
     "react-redux": "^7.2.6",
     "react-router-dom": "^6.2.1",
@@ -67,7 +70,8 @@
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "serve": "serve -s build"
   },
   "eslintConfig": {
     "extends": [

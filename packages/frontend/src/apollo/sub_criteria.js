@@ -47,6 +47,7 @@ mutation updateSubCriterion(
     $name: String!
     $value: Int
     $parentId: Int 
+    $id: Int!
   ){
     updateSubCriterion(
           input: {
@@ -58,6 +59,12 @@ mutation updateSubCriterion(
               }
           }
         ) {
+          query {
+            criterionById(id: $id) {
+              _nodeId
+            }
+          }
+
           subCriterion {
             _nodeId
             id
@@ -75,13 +82,16 @@ mutation updateSubCriterion(
 
 export const GET_SUB_CRITERIA = gql`
   query getSubCriteria($nodeId: ID!){
-    SubCriterion(_nodeId: $nodeId) {
+    subCriterion(_nodeId: $nodeId) {
         _nodeId
         id
         name
         parentId
         value
-        createdBy                                                                                                         
+        createdBy      
+        criterionByParentId {
+          _nodeId
+        }                                                                                                   
     }
   }
 `

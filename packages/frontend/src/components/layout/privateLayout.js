@@ -4,6 +4,7 @@ import { useNavigate, useLocation  } from 'react-router-dom'
 import { Users, ChevronRight, Search, Inbox, CreditCard, Bell, Lock, HelpCircle, ToggleRight } from 'react-feather'
 
 import { SideMenu, SidebarMobile } from "@components/sidebar"
+import { useTranslation } from 'react-i18next'
 
 const notifications = {
     'response': 200,
@@ -21,6 +22,7 @@ const notifications = {
 const PrivateLayout = ({ children }) => {
     const dispatch = useDispatch()
     const { isLogin } = useSelector(state => state.auth)
+    const { t, i18n } = useTranslation();
     const navigate = useNavigate()
     const location = useLocation()
     const [currentPage, setCurrentpage] = useState('Dashboard');
@@ -59,25 +61,25 @@ const PrivateLayout = ({ children }) => {
 
     useEffect(() => {
         if (location.pathname.includes('player')) {
-            setCurrentpage('Player')
+            setCurrentpage(t('Player'))
         }
         else if (location.pathname.includes('criteria')) {
-            setCurrentpage('Sub Criteria')
+            setCurrentpage(t('Sub Criteria'))
         }
         else if (location.pathname.includes('user')) {
-            setCurrentpage('User')
+            setCurrentpage(t('User'))
         }
         else if (location.pathname.includes('category')) {
-            setCurrentpage('Criteria')
+            setCurrentpage(t('Criteria'))
         }
         else if (location.pathname.includes('gap')) {
-            setCurrentpage('Gap Integrity')
+            setCurrentpage(t('Gap Integrity'))
         }
         else if (location.pathname.includes('score')) {
-            setCurrentpage('Score')
+            setCurrentpage(t('Score'))
         }
         else {
-            setCurrentpage('Dashboard')
+            setCurrentpage(t('Dashboard'))
         }
 
     }, [location])
@@ -89,12 +91,12 @@ const PrivateLayout = ({ children }) => {
             <div className="content">
                 <div className="top-bar">
                     <div className="-intro-x breadcrumb mr-auto hidden sm:flex">
-                        <a href="">Application</a>
+                        <a href="">{t('Application')}</a>
                         <ChevronRight className="breadcrumb__icon" />
                         <a href="" className="breadcrumb--active">{ currentPage }</a>
                     </div>
                     <div className="intro-x relative mr-3 sm:mr-6">
-                        <div className="search hidden sm:block">
+                        <div className="search hidden sm:hidden">
                             <input type="text" className="search__input form-control border-transparent placeholder-theme-13" placeholder="Search..." />
                             <Search className="search__icon dark:text-gray-300" />
                         </div>

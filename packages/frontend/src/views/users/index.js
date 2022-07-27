@@ -6,16 +6,18 @@ import Table from '@components/Table';
 import ManageUser from './manage';
 import { QUERY_ALL_USER_WITH_VARIABLE } from '@gql/users';
 import { RestrictDelete } from '../../components/overlay/modal';
+import { useTranslation } from "react-i18next";
 
 const columns = [
   { title: "id", field: "id", width: 100 },
-  { title: "First name", field: "firstName" },
-  { title: "Last name", field: "lastName" },
+  { title: "First Name", field: "firstName" },
+  { title: "Last Name", field: "lastName" },
 ]
 const searchFieldName = ["email"]
 
 const DefaultPage = () => {
   let navigate = useNavigate();
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false)
   const [selectedId, setSelectedId] = useState('')
 
@@ -46,10 +48,10 @@ const DefaultPage = () => {
       />
       <div className="intro-y flex flex-col sm:flex-row items-center mt-8">
         <h2 className="text-lg font-medium mr-auto">
-          {'User data'}
+          {t('User data')}
         </h2>
         <div className="w-full sm:w-auto flex mt-4 sm:mt-0">
-          <Link to={'/users/create'} className="btn btn-primary shadow-md mr-2">Add New</Link>
+          <Link to={'/users/create'} className="btn btn-primary shadow-md mr-2">{t('Add New')}</Link>
         </div>
       </div>
       {/* <DeleteUser /> */}
