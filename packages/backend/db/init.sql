@@ -237,7 +237,7 @@ CREATE TABLE dss_public.categories (
 );
 
 
-GRANT INSERT, UPDATE, DELETE ON TABLE dss_public.categories TO dss_authenticated; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE dss_public.categories TO dss_authenticated; 
 
 ALTER TABLE dss_public.criteria ADD FOREIGN KEY ("parent_id") REFERENCES dss_public.categories(id) ON DELETE CASCADE ;
 
