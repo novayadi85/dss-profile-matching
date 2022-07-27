@@ -167,7 +167,7 @@ const setup = (
                 paginationSize = size
 
                 // dir: "asc" field: "id"
-                let orders = `ID_ASC`;
+                let orders = options?.orderBy ? options.orderBy : `ID_ASC`;
 
                 if (sorters.length > 0) {
                     let orderBy = `${sorters[0].field.toUpperCase()}_${sorters[0].dir.toUpperCase()}`

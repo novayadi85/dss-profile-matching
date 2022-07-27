@@ -9,7 +9,8 @@ export const QUERY_ALL_PLAYER = gql`
     $offset: Int
     $filter: PlayerFilter
     $condition: PlayerCondition 
-    $orderBy: [PlayersOrderBy!]
+    $orderBy: [PlayersOrderBy!] = POSITION_ASC
+    $ScoreCondition: ScoreCondition
   ) {
     allPlayers(first: $first, after: $after, before: $before, last: $last, offset: $offset, condition: $condition, filter: $filter, orderBy: $orderBy ) {
       totalCount
@@ -30,10 +31,50 @@ export const QUERY_ALL_PLAYER = gql`
         phone
         position
       }
+      scores: scoresByPlayerId(condition: $ScoreCondition) {
+        totalCount
+      }
     }
   }
 `
 
+export const QUERY_ALL_PLAYER_SCORES = gql`
+  query allPlayers(
+    $first: Int!
+    $after: Cursor
+    $before: Cursor
+    $last: Int
+    $offset: Int
+    $filter: PlayerFilter
+    $condition: PlayerCondition 
+    $orderBy: [PlayersOrderBy!] = POSITION_ASC
+    $ScoreCondition: ScoreCondition
+  ) {
+    allPlayers(first: $first, after: $after, before: $before, last: $last, offset: $offset, condition: $condition, filter: $filter, orderBy: $orderBy ) {
+      totalCount
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+      nodes {
+        _nodeId
+        address
+        backNumber
+        birth
+        createdBy
+        id
+        name
+        phone
+        position
+      }
+      scores: scoresByPlayerId(condition: $ScoreCondition) {
+        totalCount
+      }
+    }
+  }
+`
 
 export const ADD_PlAYER = gql`
   mutation createPlayer(

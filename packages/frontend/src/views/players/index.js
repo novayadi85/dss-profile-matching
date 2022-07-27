@@ -81,6 +81,9 @@ const DefaultPage = () => {
         //   paginationSize: 2,
         //   paginationSizeSelector: [2, 100, 200, 300, 400, 500],
         // }}
+        option={{
+          orderBy: 'POSITION_ASC'
+        }}
         action={true}
         callback={tableAction}
         searchFieldName={searchFieldName}

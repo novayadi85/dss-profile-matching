@@ -158,11 +158,24 @@ const Calculate = () => {
                         title: label,
                     })
 
-                    let highScore = scores.sort_normalize.find(element => element !== undefined);
-                    if (highScore?.total_point && highScore.total_point > 0) {
+                        let highScore = scores.sort_normalize.find(element => element !== undefined);
+                    // if (highScore?.total_point && highScore.total_point > 0) {
                         const today = new Date();
                         let variables = {}
                         variables.createdAt = today;
+                        let res = scores.sort_normalize.map(item => {
+                            return {
+                                point: item.total_point,
+                                playerName: item.name,
+                                playerID: item.id,
+                                node_Id: item.node_Id,
+                                pic: item.photo,
+                            }
+                        });
+                    
+                        variables.result = res;
+
+                        /*
                         variables.result = {
                             point: highScore.total_point,
                             playerName: highScore.name,
@@ -170,14 +183,16 @@ const Calculate = () => {
                             node_Id: highScore.node_Id,
                             pic: highScore.photo,
                         }
+                        */
+                    
                         variables.week = getWeek();
                         variables.year = today.getFullYear();
                         variables.position = value;
-                        variables.playerId = highScore.playerId;
+                        variables.playerId = highScore?.playerId ?? null;
                         addRating({ variables });
                         console.log(variables)
                         console.log('SAVING NOW', variables)
-                    }
+                    //}
 
                     return scores
         

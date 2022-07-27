@@ -11,6 +11,7 @@ const Preview = ({ players, formations }) => {
     })
 
     let lineUps = _lineUps;
+    /*
     let stocks = players;
     let optionals = {
         LB: ['RB', 'CB', 'DM'],
@@ -44,7 +45,8 @@ const Preview = ({ players, formations }) => {
             }
         }
     }
-
+    */
+    
     const DisplayFormation = ({ lineUps, formations }) => {
         let Element;
         if (formations === '442') {

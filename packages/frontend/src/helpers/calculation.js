@@ -103,7 +103,8 @@ export const calculate = (props) => {
                 node_Id: item._nodeId,
                 id: item.backNumber,
                 playerId: item.id,
-                name: item.name
+                name: item.name,
+                pos: item.position
             }
 
             
@@ -212,6 +213,21 @@ export const calculate = (props) => {
         return y.total_point - x.total_point;
     }) : []; 
 
+    let _allCategories = allCategories.map(({...cat}) => {
+        let category = [];
+        category = cat.subCriteria.nodes.filter(c => {
+            return c.position.includes(position)
+        });
+        
+        cat.subCriteria = {
+            nodes: category,
+            totalCount: cat.subCriteria.totalCount,
+        }
+        return cat
+    })
+
+
+
     return {
         normalise_data,
         sort_normalize,
@@ -220,7 +236,7 @@ export const calculate = (props) => {
         sub_criteria_kodes,
         sub_criteria_kodes,
         sub_category_headers,
-        allCategories,
+        allCategories: _allCategories,
         title: position,
         headers
     }

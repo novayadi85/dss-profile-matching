@@ -9,49 +9,117 @@ import Tabulator from "tabulator-tables";
 import Select from 'react-select';
 import { Printer } from 'react-feather'
 import { useTranslation } from 'react-i18next';
+import { getWeek } from '../../helpers/date';
 const formatImage_ = (cell) => `<div class="w-6 h-100 max-h-full"><img class="image-relative" src="${(cell.getValue()) ? cell.getValue() :  '/logo512.png'}"></div>`
 
 const Dashboard = () => {
     const { t } = useTranslation();
     const [ratings, setRatings] = useState([]);
     const [lineUps, setLineUps] = useState([]);
-    const [formation, setFormation] = useState('442');
+    const [formation, setFormation] = useState('4213');
     const [tbl, setTbl] = useState();
     // Similar to componentDidMount and componentDidUpdate:
     useEffect(() => {
         setup();
+
     }, [ratings]);
 
     const setup = () => {
         let tableData = {};
+        let quantities = {
+            LB: {
+                quantity: 1,
+                items : []
+            },
+            CB: {
+                quantity: 2,
+                items : []
+            },
+            RB: {
+                quantity: 1,
+                items : []
+            },
+            CMF: {
+                quantity: 1,
+                items : []
+            },
+            DM: {
+                quantity: 1,
+                items : []
+            },
+            CF: {
+                quantity: 2,
+                items : []
+            },
+            GK: {
+                quantity: 1,
+                items : []
+            },
+            RWF: {
+                quantity: 1,
+                items : []
+            },
+            LWF: {
+                quantity: 1,
+                items : []
+            },
+        }
+
+        let _lineUps = {};
         ratings.forEach((rating, index) => {
             const item = {};
-            const { result = {} } = rating 
-            item.no = index + 1;
+            const { position, result = {} } = rating;
+            let items = result;
+            if (quantities[position] && result.length > 0) {
+                const diff = result.length - quantities[position]['quantity'];
+                // console.log(result.length , quantities[position])
+                if (diff > 0) {
+                    items.splice(quantities[position]['quantity'], diff)
+                }
+
+                quantities[position]['items'] = items;
+                if (items.length) {
+                    items.forEach((t => {
+                        console.log(t)
+                        if (!_lineUps[t.playerID]) _lineUps[t.playerID] = {
+                            number : t?.playerID ?? null,
+                            name : t?.playerName ?? null,
+                            pic : t?.pic ?? null,
+                            position : rating?.position ?? null,
+                            point : t?.point ?? 0.00,
+                        };
+                    }))
+                }
+            }
+
+            
+            // quantities[position]['items'] = items;
+
+            // item.no = index + 1;
+
+            /*
+
             item.number = result?.playerID ?? null;
             item.name = result?.playerName ?? null;
             item.pic = result?.pic ?? null;
             item.position = rating?.position ?? null;
             item.point = result?.point ?? 0.00;
             if (!tableData[item.number]) tableData[item.number] = item;
+            */
+            
         })
 
-        let quantities = {
-            LB: 1,
-            CB: 2,
-            RB: 1,
-            CMF: 2,
-            AMF: 1,
-            CF: 1,
-            GK: 1
-        }
-
-        let _lineUps = {};
+        console.log(_lineUps);
+        /*
+       
         positions.forEach(pos => {
+            console.log(pos.value)
+            
             let items = Object.values(tableData).filter(player => player.position === pos.value)
             items = (items.length) ? items.sort(function (x, y) {
                 return y.point - x.point;
             }) : []; 
+            console.log(items)
             
             if (quantities[pos.value] >= items.length) {
                 //_lineUps = { ..._lineUps, [pos.value]: items }
@@ -74,9 +142,11 @@ const Dashboard = () => {
                     if (!_lineUps[t.number]) _lineUps[t.number] = t;
                 }))
             }
+           
+            
             
         })
-
+        */
         tableData = _lineUps;
 
         /*
