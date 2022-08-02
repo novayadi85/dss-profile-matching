@@ -39,7 +39,7 @@ const Dashboard = () => {
                 quantity: 1,
                 items : []
             },
-            CMF: {
+            CMD: {
                 quantity: 1,
                 items : []
             },
@@ -72,15 +72,12 @@ const Dashboard = () => {
             let items = result;
             if (quantities[position] && result.length > 0) {
                 const diff = result.length - quantities[position]['quantity'];
-                // console.log(result.length , quantities[position])
                 if (diff > 0) {
                     items.splice(quantities[position]['quantity'], diff)
                 }
-
                 quantities[position]['items'] = items;
                 if (items.length) {
                     items.forEach((t => {
-                        console.log(t)
                         if (!_lineUps[t.playerID]) _lineUps[t.playerID] = {
                             number : t?.playerID ?? null,
                             name : t?.playerName ?? null,
@@ -214,7 +211,8 @@ const Dashboard = () => {
         fetchPolicy: 'no-cache',
 		variables: {
             in: positions.map(pos => pos.value),
-            first: 50000
+            first: 50000,
+            condition: {week: getWeek()}
 		},
 		onCompleted: (data) => {
 		    // const _allCategories = data?.allCategories?.nodes ?? [];

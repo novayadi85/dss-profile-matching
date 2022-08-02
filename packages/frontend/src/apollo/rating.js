@@ -34,8 +34,8 @@ export const ADD_RATING = gql`
   `
   
   export const ALL_RATINGS = gql`
-  query allRatings($first: Int = 1, $orderBy: [RatingsOrderBy!] = CREATED_AT_DESC, $in: [Positions!] = []) {
-    allRatings(filter: {position: {in: $in}}, orderBy: $orderBy, first: $first) {
+  query allRatings($first: Int = 1, $orderBy: [RatingsOrderBy!] = CREATED_AT_DESC, $in: [Positions!] = [], $condition: RatingCondition) {
+    allRatings(filter: {position: {in: $in}}, orderBy: $orderBy, first: $first, condition: $condition) {
       totalCount
       nodes {
         createdAt

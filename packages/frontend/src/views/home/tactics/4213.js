@@ -61,9 +61,9 @@ const Formation = ({ lineUps }) => {
                             </ul>
                             <ul className="player" style={{ top: 'calc(50% - 16px)', left: '29.0909090909091%' }} title="" data-playerid={328504}>
                                 <li className="player-name-wrapper">
-                                    <a className="player-name player-link cnt-oflow rc" href="#">{ (lineUps?.CMF && lineUps.CMF.length >= 1) ? lineUps.CMF[0].name : "? CMF"}</a>
+                                    <a className="player-name player-link cnt-oflow rc" href="#">{ (lineUps?.CMD && lineUps.CMD.length >= 1) ? lineUps.CMD[0].name : "? CMF"}</a>
                                 </li>
-                                <li className="player-rating rc">{ (lineUps?.CMF && lineUps.CMF.length > 0) ? lineUps.CMF[0].point : "N/A"}</li>
+                                <li className="player-rating rc">{ (lineUps?.CMD && lineUps.CMD.length > 0) ? lineUps.CMD[0].point : "N/A"}</li>
                             </ul>
                             <ul className="player" style={{ top: 'calc(80% - 16px)', left: '40.1818%' }} title="" data-playerid={137533}>
                                 <li className="player-name-wrapper">
